@@ -1,3 +1,4 @@
+
 import {
   Controller,
   Get,
@@ -6,63 +7,64 @@ import {
   Delete,
   Param,
   Body,
-  NotFoundException,
   UseGuards,
-  Request,
+  Req,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { Orders } from './orders.entity';
-import { CreateOrderDto, UpdateOrderDto } from './orders.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
+import { UpdateOrderStatusDto } from './orders.dto';
+import type { Request } from 'express';
+
+interface AuthRequest extends Request {
+  user: { userId: number; role: string };
+}
 
 @Controller('orders')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class OrdersController {
-  constructor(private ordersService: OrdersService) {}
+  constructor(private readonly ordersService: OrdersService) {}
 
 
   @Get()
   @Roles('admin')
-  findAll(): Promise<Orders[]> {
+  findAll() {
     return this.ordersService.findAll();
   }
 
-  @Get(':id_order')
-  async findOne(@Param('id_order') id_order: number): Promise<Orders> {
-    const order = await this.ordersService.findOne(id_order);
-    if (!order) {
-      throw new NotFoundException(`Order with id ${id_order} not found`);
-    }
-    return order;
+
+  @Get('me')
+  findMine(@Req() req: AuthRequest) {
+    return this.ordersService.findMine(req.user.userId);
   }
 
   
-  @Post()
+  @Get(':id_order')
+  findOne(@Param('id_order') id_order: number) {
+    return this.ordersService.findOne(id_order);
+  }
+
+  @Post('checkout')
   @Roles('customer', 'admin')
-  create(@Body() dto: CreateOrderDto): Promise<Orders> {
-    return this.ordersService.create(dto);
+  checkout(@Req() req: AuthRequest) {
+    return this.ordersService.checkout(req.user.userId);
   }
 
  
-  @Put(':id_order')
+  @Put(':id_order/status')
   @Roles('admin')
-  async update(
+  updateStatus(
     @Param('id_order') id_order: number,
-    @Body() dto: UpdateOrderDto,
-  ): Promise<Orders> {
-    const updated = await this.ordersService.update(id_order, dto);
-    if (!updated) {
-      throw new NotFoundException(`Order with id ${id_order} not found`);
-    }
-    return updated;
+    @Body() dto: UpdateOrderStatusDto,
+  ) {
+    return this.ordersService.updateStatus(id_order, dto);
   }
 
- 
+
   @Delete(':id_order')
   @Roles('admin')
-  remove(@Param('id_order') id_order: number): Promise<void> {
+  remove(@Param('id_order') id_order: number) {
     return this.ordersService.remove(id_order);
   }
 }

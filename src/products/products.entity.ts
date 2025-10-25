@@ -25,11 +25,11 @@ export class Products {
   @Column({ default: 0 })
   stock: number;
 
-  // ✅ Foto produk (opsional)
+  
   @Column({ nullable: true })
   image_url: string;
 
-  // ✅ Video produk (opsional)
+
   @Column({ nullable: true })
   video_url: string;
 
@@ -40,8 +40,7 @@ export class Products {
   updated_at: Date;
 
   
-  @OneToMany(() => Orders, (order) => order.product)
-  orders: Orders[];
+
 
   @ManyToOne(() => Categories, (categories) => categories.products, {
     eager: true,

@@ -14,6 +14,7 @@ import { OrdersModule } from './orders/orders.module';
 import { UploadController } from './uploads/uploads.controller';
 import { UploadService } from './uploads/uploads.service';
 import { CartsModule } from './carts/carts.module';
+import { OrderItems } from './orders/order-items.entity';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { CartsModule } from './carts/carts.module';
       username: process.env.DB_USERNAME || 'postgres',
       password: process.env.DB_PASSWORD || 'root',
       database: process.env.DB_NAME || 'flowcommerce',
-      entities: [Users, Products, Orders, Categories, Carts],
+      entities: [Users, Products, Orders, OrderItems, Categories, Carts],
       synchronize: true,
     }),
 
