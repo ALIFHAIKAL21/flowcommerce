@@ -24,14 +24,8 @@ interface AuthRequest extends Request {
 @Controller('orders')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+  constructor(private readonly ordersService: OrdersService) { }
 
-
-  @Get()
-  @Roles('admin')
-  findAll() {
-    return this.ordersService.findAll();
-  }
 
 
   @Get('me')
@@ -39,7 +33,7 @@ export class OrdersController {
     return this.ordersService.findMine(req.user.userId);
   }
 
-  
+
   @Get(':id_order')
   findOne(@Param('id_order') id_order: number) {
     return this.ordersService.findOne(id_order);
@@ -51,7 +45,7 @@ export class OrdersController {
     return this.ordersService.checkout(req.user.userId);
   }
 
- 
+
   @Put(':id_order/status')
   @Roles('admin')
   updateStatus(
@@ -59,6 +53,12 @@ export class OrdersController {
     @Body() dto: UpdateOrderStatusDto,
   ) {
     return this.ordersService.updateStatus(id_order, dto);
+  }
+
+  @Put(':id_order/refund')
+  @Roles('admin')
+  async refund(@Param('id_order') id_order: number) {
+    return this.ordersService.refundOrder(id_order);
   }
 
 

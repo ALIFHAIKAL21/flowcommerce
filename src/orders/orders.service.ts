@@ -167,6 +167,29 @@ async checkout(userId: number): Promise<{ order: Orders; clientSecret: string }>
   return this.ordersRepo.findOne({ where: { payment_intent_id: paymentIntentId } });
 }
 
+async refundOrder(id_order: number): Promise<Orders> {
+  const order = await this.findOne(id_order);
+
+  if (order.status !== 'paid') {
+    throw new BadRequestException('Only paid orders can be refunded');
+  }
+
+  if (!order.payment_intent_id) {
+    throw new BadRequestException('No payment intent found for this order');
+  }
+
+  const refund = await this.paymentservice.refundPayment(order.payment_intent_id);
+
+  order.status = 'refunded';
+  order.refund_id = refund.id;
+  order.refunded_at = new Date();
+
+  await this.ordersRepo.save(order);
+
+  return order;
+}
+
+
 async save(order: Orders) {
   return this.ordersRepo.save(order);
 }

@@ -20,14 +20,20 @@ export class Orders {
   @Column({ default: 'pending' })
   status: string;
 
-  @Column({nullable : true})
-  payment_intent_id? : string
+  @Column({ nullable: true })
+  payment_intent_id?: string
 
   @ManyToOne(() => Users, (user) => user.orders, { eager: true, onDelete: 'CASCADE' })
   user: Users;
 
   @OneToMany(() => OrderItems, (item) => item.order, { cascade: true })
   items: OrderItems[];
+
+  @Column({ nullable: true })
+  refund_id: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  refunded_at: Date | null;
 
   @CreateDateColumn()
   created_at: Date;

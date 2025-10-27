@@ -23,4 +23,17 @@ export class PaymentService {
   async retrievePaymentIntent(id: string) {
     return this.stripe.paymentIntents.retrieve(id);
   }
+
+  async refundPayment(paymentIntentId: string) {
+  try {
+    const refund = await this.stripe.refunds.create({
+      payment_intent: paymentIntentId,
+    });
+    return refund;
+  } catch (err) {
+    console.error('❌ Refund failed:', err.message);
+    throw err;
+  }
+}
+
 }
