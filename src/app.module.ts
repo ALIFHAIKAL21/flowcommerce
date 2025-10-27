@@ -15,6 +15,7 @@ import { UploadController } from './uploads/uploads.controller';
 import { UploadService } from './uploads/uploads.service';
 import { CartsModule } from './carts/carts.module';
 import { OrderItems } from './orders/order-items.entity';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { OrderItems } from './orders/order-items.entity';
     OrdersModule,
     CategoriesModule,
     CartsModule,
+    PaymentModule,
   ],
 
   controllers: [UploadController],

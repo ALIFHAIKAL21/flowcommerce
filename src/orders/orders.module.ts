@@ -7,10 +7,12 @@ import { OrdersController } from './orders.controller';
 import { Products } from '../products/products.entity';
 import { Users } from '../users/users.entity';
 import { Carts } from '../carts/carts.entity';
+import { PaymentModule } from '../payment/payment.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Orders, OrderItems, Products, Users, Carts]),
+    PaymentModule
   ],
   controllers: [OrdersController],
   providers: [OrdersService],

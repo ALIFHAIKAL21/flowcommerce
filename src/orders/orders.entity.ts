@@ -20,6 +20,9 @@ export class Orders {
   @Column({ default: 'pending' })
   status: string;
 
+  @Column({nullable : true})
+  payment_intent_id? : string
+
   @ManyToOne(() => Users, (user) => user.orders, { eager: true, onDelete: 'CASCADE' })
   user: Users;
 

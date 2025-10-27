@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Test Payment</title>
+    <script src="https://js.stripe.com/v3/"></script>
+  </head>
+  <body>
+    <form id="payment-form">
+      <div id="card-element"></div>
+      <button id="submit">Bayar Sekarang</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+      const stripe = Stripe("pk_test_51SMkGwGRGClTIbUYdaUqWkLOvLMH09iJhUXKFEpXB15w4o13WH4JE1D5rfMYeR85awFMZft8lhGOGS2X2To1wNHb00E4y2xAH7"); // publishable key kamu
+      const clientSecret = "pi_3SMm5eGRGClTIbUY1FBbqXVR_secret_hzXITnLnr34RoDouyDQOPJvlb"; // hasil dari /checkout
+
+      const elements = stripe.elements();
+      const card = elements.create("card");
+      card.mount("#card-element");
+
+      const form = document.getElementById("payment-form");
+      const msg = document.getElementById("message");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        msg.textContent = "⏳ Memproses pembayaran...";
+
+        const { error, paymentIntent } = await stripe.confirmCardPayment(
+          clientSecret,
+          { payment_method: { card } }
+        );
+
+        if (error) msg.textContent = "❌ Gagal: " + error.message;
+        else if (paymentIntent.status === "succeeded")
+          msg.textContent = "✅ Pembayaran berhasil!";
+      });
+    </script>
+  </body>
+</html>

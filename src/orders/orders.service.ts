@@ -12,6 +12,7 @@ import { Products } from '../products/products.entity';
 import { Users } from '../users/users.entity';
 import { Carts } from '../carts/carts.entity';
 import { UpdateOrderStatusDto } from './orders.dto';
+import { PaymentService } from '../payment/payment.service';
 
 @Injectable()
 export class OrdersService {
@@ -32,6 +33,8 @@ export class OrdersService {
 
     @InjectRepository(Users)
     private readonly usersRepo: Repository<Users>,
+
+    private readonly paymentservice: PaymentService,
   ) {}
 
   async findAll(): Promise<Orders[]> {
@@ -60,90 +63,93 @@ export class OrdersService {
     return order;
   }
 
-  async checkout(userId: number): Promise<Orders> {
+async checkout(userId: number): Promise<{ order: Orders; clientSecret: string }> {
+  const user = await this.usersRepo.findOneBy({ id_user: userId });
+  if (!user) throw new NotFoundException(`User with id ${userId} not found`);
 
-    const user = await this.usersRepo.findOneBy({ id_user: userId });
-    if (!user) throw new NotFoundException(`User with id ${userId} not found`);
-
-    
-    const cartItems = await this.cartsRepo.find({
-      where: { user: { id_user: userId } },
-      relations: ['product'],
-    });
-    if (cartItems.length === 0) {
-      throw new BadRequestException('Your cart is empty');
-    }
-
-
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-    
-      let order = this.ordersRepo.create({
-        user,
-        status: 'pending',
-        total_price: 0,
-      });
-      order = await queryRunner.manager.save(order);
-
-    
-      let grandTotal = 0;
-
-      for (const cart of cartItems) {
-        const product = await queryRunner.manager.findOne(Products, {
-          where: { id_product: cart.product.id_product },
-        });
-        if (!product) {
-          throw new NotFoundException(
-            `Product with id ${cart.product.id_product} not found`,
-          );
-        }
-
-        if (product.stock < cart.quantity) {
-          throw new BadRequestException(
-            `Not enough stock for ${product.name} (requested ${cart.quantity}, stock ${product.stock})`,
-          );
-        }
-
-        product.stock -= cart.quantity;
-        await queryRunner.manager.save(product);
-
-        const subtotal =
-          Number(product.price) * Number(cart.quantity ?? 1);
-
-        const item = this.orderItemsRepo.create({
-          order,
-          product,
-          quantity: cart.quantity,
-          subtotal,
-        });
-        await queryRunner.manager.save(item);
-
-        grandTotal += subtotal;
-      }
-
-      
-      order.total_price = grandTotal;
-      await queryRunner.manager.save(order);
-
-  
-      await queryRunner.manager.delete(Carts, { user: { id_user: userId } });
-
-      await queryRunner.commitTransaction();
-
-     
-      return this.findOne(order.id_order);
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-      throw err;
-    } finally {
-      await queryRunner.release();
-    }
+  const cartItems = await this.cartsRepo.find({
+    where: { user: { id_user: userId } },
+    relations: ['product'],
+  });
+  if (cartItems.length === 0) {
+    throw new BadRequestException('Your cart is empty');
   }
 
+  const queryRunner = this.dataSource.createQueryRunner();
+  await queryRunner.connect();
+  await queryRunner.startTransaction();
 
-  async updateStatus(id_order: number, dto: UpdateOrderStatusDto): Promise<Orders> {
+  try {
+    let order = this.ordersRepo.create({
+      user,
+      status: 'pending',
+      total_price: 0,
+    });
+    order = await queryRunner.manager.save(order);
+
+    let grandTotal = 0;
+
+    for (const cart of cartItems) {
+      const product = await queryRunner.manager.findOne(Products, {
+        where: { id_product: cart.product.id_product },
+      });
+      if (!product) {
+        throw new NotFoundException(
+          `Product with id ${cart.product.id_product} not found`,
+        );
+      }
+
+      if (product.stock < cart.quantity) {
+        throw new BadRequestException(
+          `Not enough stock for ${product.name} (requested ${cart.quantity}, stock ${product.stock})`,
+        );
+      }
+
+      product.stock -= cart.quantity;
+      await queryRunner.manager.save(product);
+
+      const subtotal = Number(product.price) * Number(cart.quantity ?? 1);
+
+      const item = this.orderItemsRepo.create({
+        order,
+        product,
+        quantity: cart.quantity,
+        subtotal,
+      });
+      await queryRunner.manager.save(item);
+
+      grandTotal += subtotal;
+    }
+
+    order.total_price = grandTotal;
+    await queryRunner.manager.save(order);
+
+    await queryRunner.manager.delete(Carts, { user: { id_user: userId } });
+    await queryRunner.commitTransaction();
+
+
+    const paymentIntent = await this.paymentservice.createPaymentIntent(grandTotal);
+    order.payment_intent_id = paymentIntent.id;
+    await this.ordersRepo.save(order);
+
+
+    return {
+      order,
+      clientSecret: paymentIntent.client_secret!
+    };
+  } catch (err) {
+    await queryRunner.rollbackTransaction();
+    throw err;
+  } finally {
+    await queryRunner.release();
+  }
+}
+
+
+  async updateStatus(
+    id_order: number,
+    dto: UpdateOrderStatusDto,
+  ): Promise<Orders> {
     const order = await this.findOne(id_order);
     order.status = dto.status;
     await this.ordersRepo.save(order);
@@ -156,4 +162,13 @@ export class OrdersService {
       throw new NotFoundException(`Order with id ${id_order} not found`);
     }
   }
+
+  async findByPaymentIntent(paymentIntentId: string) {
+  return this.ordersRepo.findOne({ where: { payment_intent_id: paymentIntentId } });
+}
+
+async save(order: Orders) {
+  return this.ordersRepo.save(order);
+}
+
 }
