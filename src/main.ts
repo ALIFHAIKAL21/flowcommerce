@@ -10,6 +10,7 @@ async function bootstrap() {
   app.use(bodyParser.json());
   app.use('/payment/webhook', bodyParser.raw({ type: '*/*' }));
 
+  
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   const config = new DocumentBuilder()
