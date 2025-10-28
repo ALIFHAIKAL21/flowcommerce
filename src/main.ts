@@ -1,31 +1,48 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import * as bodyParser from 'body-parser';
+import * as express from 'express';
+import { setupSwagger } from './swager';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
 
-  app.use(bodyParser.json());
-  app.use('/payment/webhook', bodyParser.raw({ type: '*/*' }));
+  const app = await NestFactory.create(AppModule, {
+    bodyParser: false,
+  });
 
-  
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
-  const config = new DocumentBuilder()
-    .setTitle('FlowCommerce API')
-    .setDescription('E-commerce backend built with NestJS')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
+  app.use('/payment/webhook', express.raw({ type: 'application/json' }));
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  app.use(express.json());
 
-  await app.listen(4000);
-  console.log('🚀 API running on http://localhost:4000');
-  console.log('📘 Swagger Docs: http://localhost:4000/docs');
+  // global pipes
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true, 
+      },
+    }),
+  );
+
+  // Setup Swagger 
+  setupSwagger(app);
+
+  // CORS setup 
+  app.enableCors({
+    origin: [
+      'http://localhost:3000', 
+      'http://127.0.0.1:3000',
+      'http://localhost:5500',
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  });
+
+  await app.listen(3000);
+  console.log(`🚀 Server running on http://localhost:3000`);
+  console.log(`📘 Swagger docs: http://localhost:3000/api/docs`);
 }
 
 bootstrap();
