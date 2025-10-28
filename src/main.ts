@@ -1,46 +1,30 @@
-// src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import * as express from 'express';
 import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
-  // ⚠️ Penting: gunakan express instance manual
-  const app = await NestFactory.create(AppModule, {
-    bodyParser: false, // Matikan body parser bawaan NestJS
-  });
+  const app = await NestFactory.create(AppModule);
 
-  // ✅ Stripe butuh raw body untuk verifikasi signature
-  app.use('/payment/webhook', express.raw({ type: 'application/json' }));
+  app.use(bodyParser.json());
+  app.use('/payment/webhook', bodyParser.raw({ type: '*/*' }));
 
-  // ✅ Semua route lain tetap pakai JSON
-  app.use(express.json());
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
-  // ✅ Pipe validator (biar gak ngaruh ke webhook)
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-    }),
-  );
+  const config = new DocumentBuilder()
+    .setTitle('FlowCommerce API')
+    .setDescription('E-commerce backend built with NestJS')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
 
-  // ✅ CORS setup
-  app.enableCors({
-    origin: [
-      'http://127.0.0.1:5500',
-      'http://localhost:5500',
-      'http://localhost:3001',
-    ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  });
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
 
-  await app.listen(3000);
-  console.log('🚀 Server running on http://localhost:3000');
+  await app.listen(4000);
+  console.log('🚀 API running on http://localhost:4000');
+  console.log('📘 Swagger Docs: http://localhost:4000/docs');
 }
 
 bootstrap();
