@@ -55,11 +55,6 @@ export class OrdersController {
     return this.ordersService.updateStatus(id_order, dto);
   }
 
-  @Put(':id_order/refund')
-  @Roles('admin')
-  async refund(@Param('id_order') id_order: number) {
-    return this.ordersService.refundOrder(id_order);
-  }
 
 
   @Delete(':id_order')

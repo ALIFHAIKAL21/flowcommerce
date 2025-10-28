@@ -29,11 +29,6 @@ export class Orders {
   @OneToMany(() => OrderItems, (item) => item.order, { cascade: true })
   items: OrderItems[];
 
-  @Column({ nullable: true })
-  refund_id: string;
-
-  @Column({ type: 'timestamp', nullable: true })
-  refunded_at: Date | null;
 
   @CreateDateColumn()
   created_at: Date;

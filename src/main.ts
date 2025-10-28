@@ -2,26 +2,34 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import * as express from 'express';
 import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // ⚠️ Penting: gunakan express instance manual
+  const app = await NestFactory.create(AppModule, {
+    bodyParser: false, // Matikan body parser bawaan NestJS
+  });
 
- 
-  app.use('/payment/webhook', bodyParser.raw({ type: '*/*' }));
-  
+  // ✅ Stripe butuh raw body untuk verifikasi signature
+  app.use('/payment/webhook', express.raw({ type: 'application/json' }));
+
+  // ✅ Semua route lain tetap pakai JSON
+  app.use(express.json());
+
+  // ✅ Pipe validator (biar gak ngaruh ke webhook)
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
       transformOptions: {
-        enableImplicitConversion: true, // string "1" => number 1
+        enableImplicitConversion: true,
       },
     }),
   );
 
-  //CORS configuration
+  // ✅ CORS setup
   app.enableCors({
     origin: [
       'http://127.0.0.1:5500',
@@ -32,7 +40,7 @@ async function bootstrap() {
   });
 
   await app.listen(3000);
-  console.log(`🚀 Server running on http://localhost:3000`);
+  console.log('🚀 Server running on http://localhost:3000');
 }
 
 bootstrap();

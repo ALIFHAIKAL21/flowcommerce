@@ -7,7 +7,7 @@ export class PaymentService {
 
   constructor() {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: '2024-04-10' as any
+      apiVersion: '2024-04-10' as any,
     });
   }
 
@@ -23,17 +23,5 @@ export class PaymentService {
   async retrievePaymentIntent(id: string) {
     return this.stripe.paymentIntents.retrieve(id);
   }
-
-  async refundPayment(paymentIntentId: string) {
-  try {
-    const refund = await this.stripe.refunds.create({
-      payment_intent: paymentIntentId,
-    });
-    return refund;
-  } catch (err) {
-    console.error('❌ Refund failed:', err.message);
-    throw err;
-  }
-}
 
 }
