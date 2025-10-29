@@ -16,7 +16,7 @@ import { CartsModule } from './carts/carts.module';
 import { UploadController } from './uploads/uploads.controller';
 import { UploadService } from './uploads/uploads.service';
 import { PaymentModule } from './payment/payment.module';
-import { AppController } from './app.controller';
+
 
 
 @Module({
@@ -30,14 +30,15 @@ import { AppController } from './app.controller';
     // Database Connection
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      port: Number(process.env.DB_PORT) || 5432,
-      username: process.env.DB_USERNAME || 'postgres',
-      password: process.env.DB_PASSWORD || 'root',
-      database: process.env.DB_NAME || 'flowcommerce',
+      url: process.env.DATABASE_URL,
       entities: [Users, Products, Orders, OrderItems, Categories, Carts],
-      synchronize: true,
+      synchronize: false,
+      ssl: true,
+      extra: {
+        ssl: { rejectUnauthorized: false },
+      },
     }),
+
 
     //Core Business Modules
     AuthModule,
@@ -47,11 +48,11 @@ import { AppController } from './app.controller';
     CategoriesModule,
     CartsModule,
     PaymentModule,
-    
+
   ],
 
   controllers: [UploadController],
   providers: [UploadService],
-  
+
 })
 export class AppModule { }
