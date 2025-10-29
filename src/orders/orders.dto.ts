@@ -10,6 +10,6 @@ export class CreateOrderDto {
 
 export class UpdateOrderStatusDto {
   @IsString()
-  @IsIn(['pending', 'paid'])
+  @IsIn(['pending', 'paid', 'failed', 'cancelled'])
   status: string;
 }
