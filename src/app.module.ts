@@ -32,7 +32,7 @@ import { AppController } from './app.controller';
       type: 'postgres',
       url: process.env.DATABASE_URL,
       entities: [Users, Products, Orders, OrderItems, Categories, Carts],
-      synchronize: false,
+      synchronize: true,
       ssl: true,
       extra: {
         ssl: { rejectUnauthorized: false },
