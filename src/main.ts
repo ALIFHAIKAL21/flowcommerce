@@ -2,7 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as express from 'express';
-import { setupSwagger } from './swager';
+import { setupSwagger } from './swagger';
+
 
 async function bootstrap() {
 
@@ -33,16 +34,17 @@ async function bootstrap() {
   // CORS setup 
   app.enableCors({
     origin: [
-      'http://localhost:3000', 
+      'http://localhost:3001', 
       'http://127.0.0.1:3000',
       'http://localhost:5500',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
 
-  await app.listen(3000);
-  console.log(`🚀 Server running on http://localhost:3000`);
-  console.log(`📘 Swagger docs: http://localhost:3000/api/docs`);
+  await app.listen(process.env.PORT || 3000, '0.0.0.0');
+ console.log(`🚀 Server running on port ${process.env.PORT || 3000}`);
+console.log(`📘 Swagger docs: /api/docs`);
+
 }
 
 bootstrap();
