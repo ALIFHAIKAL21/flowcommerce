@@ -16,7 +16,7 @@ import { CartsModule } from './carts/carts.module';
 import { UploadController } from './uploads/uploads.controller';
 import { UploadService } from './uploads/uploads.service';
 import { PaymentModule } from './payment/payment.module';
-
+import { AppController } from './app.controller';
 
 
 @Module({
@@ -51,7 +51,7 @@ import { PaymentModule } from './payment/payment.module';
 
   ],
 
-  controllers: [UploadController],
+  controllers: [UploadController,AppController],
   providers: [UploadService],
 
 })
