@@ -23,7 +23,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
       transform: true,
       transformOptions: {
-        enableImplicitConversion: true, 
+        enableImplicitConversion: true,
       },
     }),
   );
@@ -34,16 +34,18 @@ async function bootstrap() {
   // CORS setup 
   app.enableCors({
     origin: [
-      'http://localhost:3001', 
+      'http://localhost:3001',
       'http://127.0.0.1:3000',
       'http://localhost:5500',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
 
-  await app.listen(process.env.PORT || 3000, '0.0.0.0');
- console.log(`🚀 Server running on port ${process.env.PORT || 3000}`);
-console.log(`📘 Swagger docs: /api/docs`);
+  const port = process.env.PORT || 3000;
+  await app.listen(port, '0.0.0.0');
+  console.log(`🚀 Server running on port ${port}`);
+  console.log(`📘 Swagger docs: http://localhost:${port}/api/docs`);
+
 
 }
 
