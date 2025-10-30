@@ -14,7 +14,7 @@ async function bootstrap() {
   const expressApp = app.getHttpAdapter().getInstance();
 
   // Serve static files from /public
-  app.useStaticAssets(join(__dirname, '..', 'public'));
+ app.useStaticAssets(join(process.cwd(), 'public'));
 
   // Stripe Webhook
   expressApp.use('/payment/webhook', express.raw({ type: 'application/json' }));
@@ -140,7 +140,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
 <body>
   <div class="container">
     <section class="hero">
-      <span class="badge">🚀 Project · Production-ready E-commerce Backend</span>
+      <span class="badge">🚀 Project Overview</span>
       <h1>FlowCommerce</h1>
       <p>
         A modern, scalable, and developer-friendly <b>e-commerce backend platform</b> engineered with <span class="kbd">NestJS</span> and powered by <span class="kbd">PostgreSQL (Neon)</span>. 
@@ -150,7 +150,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
       <div class="actions">
         <a class="button" href="/api/docs" target="_blank">📘 Swagger API Docs</a>
         <a class="button ghost" href="https://flowcommerce.onrender.com" target="_blank">🌐 Deployed API</a>
-        <a class="button ghost" href="https://github.com/" target="_blank" rel="noopener">⭐ GitHub (Repo)</a>
+        <a class="button ghost" href="https://github.com/ALIFHAIKAL21/flowcommerce" target="_blank" rel="noopener">⭐ GitHub (Repo)</a>
       </div>
     </section>
 
@@ -164,13 +164,13 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
           <div class="logo"><img alt="TypeScript" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"></div>
           <div class="logo"><img alt="Node.js" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"></div>
           <div class="logo"><img alt="PostgreSQL" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg"></div>
-          <div class="logo"><img alt="Neon" src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/neon.svg"></div>
+          <div class="logo"><svg width="26px" height="26px" viewBox="0 0 58 58" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 10C0 4.47715 4.47705 0 9.99976 0H47.9989C53.5216 0 57.9986 4.47715 57.9986 10V42.3189C57.9986 48.0326 50.7684 50.5124 47.2618 46.0014L36.2991 31.8988V49C36.2991 53.9706 32.2698 58 27.2993 58H9.99976C4.47705 58 0 53.5228 0 48V10ZM9.99976 8C8.89522 8 7.99981 8.89543 7.99981 10V48C7.99981 49.1046 8.89522 50 9.99976 50H27.5993C28.1516 50 28.2993 49.5523 28.2993 49V26.0673C28.2993 20.3536 35.5295 17.8738 39.0361 22.3848L49.9988 36.4874V10C49.9988 8.89543 50.1034 8 48.9988 8H9.99976Z" fill="#12FFF7"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M0 10C0 4.47715 4.47705 0 9.99976 0H47.9989C53.5216 0 57.9986 4.47715 57.9986 10V42.3189C57.9986 48.0326 50.7684 50.5124 47.2618 46.0014L36.2991 31.8988V49C36.2991 53.9706 32.2698 58 27.2993 58H9.99976C4.47705 58 0 53.5228 0 48V10ZM9.99976 8C8.89522 8 7.99981 8.89543 7.99981 10V48C7.99981 49.1046 8.89522 50 9.99976 50H27.5993C28.1516 50 28.2993 49.5523 28.2993 49V26.0673C28.2993 20.3536 35.5295 17.8738 39.0361 22.3848L49.9988 36.4874V10C49.9988 8.89543 50.1034 8 48.9988 8H9.99976Z" fill="url(#paint0_linear_10558_11777)"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M0 10C0 4.47715 4.47705 0 9.99976 0H47.9989C53.5216 0 57.9986 4.47715 57.9986 10V42.3189C57.9986 48.0326 50.7684 50.5124 47.2618 46.0014L36.2991 31.8988V49C36.2991 53.9706 32.2698 58 27.2993 58H9.99976C4.47705 58 0 53.5228 0 48V10ZM9.99976 8C8.89522 8 7.99981 8.89543 7.99981 10V48C7.99981 49.1046 8.89522 50 9.99976 50H27.5993C28.1516 50 28.2993 49.5523 28.2993 49V26.0673C28.2993 20.3536 35.5295 17.8738 39.0361 22.3848L49.9988 36.4874V10C49.9988 8.89543 50.1034 8 48.9988 8H9.99976Z" fill="url(#paint1_linear_10558_11777)"></path><path d="M48.0003 0C53.523 0 58 4.47715 58 10V42.3189C58 48.0326 50.7699 50.5124 47.2633 46.0014L36.3006 31.8988V49C36.3006 53.9706 32.2712 58 27.3008 58C27.8531 58 28.3008 57.5523 28.3008 57V26.0673C28.3008 20.3536 35.5309 17.8738 39.0375 22.3848L50.0002 36.4874V2C50.0002 0.89543 49.1048 0 48.0003 0Z" fill="#B9FFB3"></path><defs><linearGradient id="paint0_linear_10558_11777" x1="57.9986" y1="58" x2="6.99848" y2="0.00123034" gradientUnits="userSpaceOnUse"><stop stop-color="#B9FFB3"></stop><stop offset="1" stop-color="#B9FFB3" stop-opacity="0"></stop></linearGradient><linearGradient id="paint1_linear_10558_11777" x1="57.9986" y1="58" x2="23.5492" y2="44.6006" gradientUnits="userSpaceOnUse"><stop stop-color="#1A1A1A" stop-opacity="0.9"></stop><stop offset="1" stop-color="#1A1A1A" stop-opacity="0"></stop></linearGradient></defs></svg></div>
           <div class="logo"><img alt="TypeORM" src="https://raw.githubusercontent.com/typeorm/typeorm/master/resources/logo_big.png"></div>
           <div class="logo"><img alt="Stripe" src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/stripe.svg"></div>
           <div class="logo"><img alt="Cloudinary" src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/cloudinary.svg"></div>
           <div class="logo"><img alt="Render" src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/render.svg"></div>
           <div class="logo"><img alt="GitHub" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"></div>
-          <div class="logo"><img alt="JWT" src="https://raw.githubusercontent.com/auth0/jwt.io/master/img/pic_logo.svg"></div>
+          <div class="logo"><img alt="JWT" src=https://www.vaadata.com/blog/wp-content/uploads/2016/12/jwt-json-web-token.png"></div>
           <div class="logo"><img alt="OpenAPI" src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/openapiinitiative.svg"></div>
         </div>
         <div class="hr"></div>
@@ -211,87 +211,69 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
     </div>
 
     <!-- ERD -->
-    <section class="card">
-      <h2>🗺️ Entity Relationship Diagram (ERD)</h2>
-      <p class="small">If <span class="kbd">/public/erd.png</span> exists, replace this inline diagram with your own.</p>
-      <div class="erd">
-        <img src="/erd.png" alt="FlowCommerce ERD" onerror="this.style.display='none';document.getElementById('erd-inline').style.display='block'">
-        <svg id="erd-inline" viewBox="0 0 990 380" width="100%" style="display:none">
-          <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L9,3 z" fill="#8aa4bf"/></marker></defs>
-          <rect x="40" y="40" width="150" height="60" rx="10" fill="#1AA3A1"></rect>
-          <text x="115" y="75" fill="#062b29" font-size="14" text-anchor="middle" font-weight="800">Users</text>
+   <section class="card" style="margin-top:12px">
+  <h2>🗺️ Entity Relationship Diagram (ERD)</h2>
+  <p class="small">Database schema visualization generated from PostgreSQL (Neon).</p>
+  <div class="erd" style="background:#0b1220;border-radius:12px;padding:12px">
+    <img src="/erd.svg" alt="FlowCommerce ERD" style="width:100%;border-radius:12px;">
+  </div>
+</section>
 
-          <rect x="250" y="40" width="170" height="60" rx="10" fill="#1AA3A1"></rect>
-          <text x="335" y="75" fill="#062b29" font-size="14" text-anchor="middle" font-weight="800">Orders</text>
-
-          <rect x="470" y="40" width="190" height="60" rx="10" fill="#1AA3A1"></rect>
-          <text x="565" y="75" fill="#062b29" font-size="14" text-anchor="middle" font-weight="800">OrderItems</text>
-
-          <rect x="250" y="160" width="190" height="60" rx="10" fill="#1AA3A1"></rect>
-          <text x="345" y="195" fill="#062b29" font-size="14" text-anchor="middle" font-weight="800">Products</text>
-
-          <rect x="40" y="270" width="150" height="60" rx="10" fill="#1AA3A1"></rect>
-          <text x="115" y="305" fill="#062b29" font-size="14" text-anchor="middle" font-weight="800">Carts</text>
-
-          <rect x="520" y="270" width="160" height="60" rx="10" fill="#1AA3A1"></rect>
-          <text x="600" y="305" fill="#062b29" font-size="14" text-anchor="middle" font-weight="800">Categories</text>
-
-          <line x1="190" y1="70" x2="250" y2="70" stroke="#8aa4bf" stroke-width="2" marker-end="url(#arrow)"/>
-          <line x1="420" y1="70" x2="470" y2="70" stroke="#8aa4bf" stroke-width="2" marker-end="url(#arrow)"/>
-          <line x1="335" y1="100" x2="335" y2="160" stroke="#8aa4bf" stroke-width="2" marker-end="url(#arrow)"/>
-          <line x1="115" y1="270" x2="115" y2="100" stroke="#8aa4bf" stroke-width="2" marker-end="url(#arrow)"/>
-          <line x1="440" y1="190" x2="520" y2="300" stroke="#8aa4bf" stroke-width="2" marker-end="url(#arrow)"/>
-        </svg>
-      </div>
-    </section>
 
     <!-- Folder Structure -->
-    <section class="card">
+    <section class="card" style="margin-top:12px">
       <h2>📁 Folder Structure</h2>
-      <pre><code>src/
-├─ app.module.ts
-├─ main.ts
-├─ swagger.ts
+     <pre><code>flowcommerce/
+├─ dist/
+├─ node_modules/
 ├─ public/
-│  ├─ erd.png                # (optional) replace inline ERD
-│  └─ images/                # logos, assets
-├─ auth/
-│  ├─ auth.controller.ts
-│  ├─ auth.service.ts
-│  └─ jwt.strategy.ts
-├─ users/
-│  ├─ users.controller.ts
-│  ├─ users.service.ts
-│  └─ users.entity.ts
-├─ categories/
-│  ├─ categories.controller.ts
-│  ├─ categories.service.ts
-│  └─ categories.entity.ts
-├─ products/
-│  ├─ products.controller.ts
-│  ├─ products.service.ts
-│  └─ products.entity.ts
-├─ carts/
-│  ├─ carts.controller.ts
-│  ├─ carts.service.ts
-│  └─ carts.entity.ts
-├─ orders/
-│  ├─ orders.controller.ts
-│  ├─ orders.service.ts
-│  ├─ orders.entity.ts
-│  └─ order-items.entity.ts
-├─ payment/
-│  ├─ payment.controller.ts
-│  └─ payment.service.ts
-└─ uploads/
-   ├─ uploads.service.ts
-   └─ upload.controller.ts
+├─ src/
+│  ├─ app.module.ts
+│  ├─ main.ts
+│  ├─ swagger.ts
+│  ├─ auth/
+│  │  ├─ auth.controller.ts
+│  │  ├─ auth.service.ts
+│  │  └─ jwt.strategy.ts
+│  ├─ users/
+│  │  ├─ users.controller.ts
+│  │  ├─ users.service.ts
+│  │  └─ users.entity.ts
+│  ├─ categories/
+│  │  ├─ categories.controller.ts
+│  │  ├─ categories.service.ts
+│  │  └─ categories.entity.ts
+│  ├─ products/
+│  │  ├─ products.controller.ts
+│  │  ├─ products.service.ts
+│  │  └─ products.entity.ts
+│  ├─ carts/
+│  │  ├─ carts.controller.ts
+│  │  ├─ carts.service.ts
+│  │  └─ carts.entity.ts
+│  ├─ orders/
+│  │  ├─ orders.controller.ts
+│  │  ├─ orders.service.ts
+│  │  ├─ orders.entity.ts
+│  │  └─ order-items.entity.ts
+│  ├─ payment/
+│  │  ├─ payment.controller.ts
+│  │  └─ payment.service.ts
+│  └─ uploads/
+│     ├─ uploads.service.ts
+│     └─ upload.controller.ts
+├─ test/
+│  └─ ...
+├─ .env
+├─ package.json
+├─ render.yaml
+└─ tsconfig.json
 </code></pre>
+
     </section>
 
     <!-- ENV -->
-    <section class="card">
+    <section class="card" style="margin-top:12px">
       <h2>🔐 Environment Variables</h2>
       <button class="button copy" onclick="copyEnv()">Copy</button>
       <pre id="env"><code>DATABASE_URL=postgres://user:pass@neon.host/db
@@ -310,7 +292,7 @@ RENDER_EXTERNAL_URL=${baseUrl}</code></pre>
     </section>
 
     <!-- Endpoints -->
-    <section class="card">
+    <section class="card" style="margin-top:16px">
       <h2>🔗 Useful Links & Endpoints</h2>
       <ul>
         <li>Base URL: <span class="kbd">${baseUrl}</span></li>
@@ -325,7 +307,7 @@ RENDER_EXTERNAL_URL=${baseUrl}</code></pre>
       </ul>
     </section>
 
-    <p class="footer">© 2025 FlowCommerce · built by Alif · NestJS • TypeORM • PostgreSQL (Neon) • Stripe • Cloudinary • Render • OpenAPI</p>
+    <p class="footer">© 2025 FlowCommerce · built by Alif Haikal From Flowdev Teams</p>
   </div>
 
 <script>
@@ -339,7 +321,7 @@ function copyEnv(){
 </body>
 </html>
     `);
-  });const port = process.env.PORT || 3000;
+  }); const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');
 
   console.log(`🚀 Server running at ${baseUrlFromEnv()}`);
