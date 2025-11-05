@@ -11,6 +11,7 @@ export class PaymentService {
     });
   }
 
+  // Create Payment Intent
   async createPaymentIntent(amount: number) {
     const paymentIntent = await this.stripe.paymentIntents.create({
       amount: Math.round(amount * 100),

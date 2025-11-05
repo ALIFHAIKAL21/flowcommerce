@@ -11,6 +11,7 @@ export class UsersService {
         @InjectRepository(Users) private usersRepo: Repository<Users>,
     ) { }
 
+    // Get All Users
     findAll(): Promise<Users[]> {
 
         return this.usersRepo.find();
@@ -20,14 +21,14 @@ export class UsersService {
         return this.usersRepo.findOne({ where: { id_user } });
     }
 
-
+// Find User by Username
     async findByUsername(username: string): Promise<Users | null> {
         return this.usersRepo.findOne({ where: { username } });
     }
 
     
     async create(dto: CreateUserDto): Promise<Users> {
-        // cek username duplikat
+        // Check if username already exists
         const exists = await this.usersRepo.findOne({ where: { username: dto.username } });
         if (exists) throw new ConflictException('Username already taken');
 
@@ -42,6 +43,7 @@ export class UsersService {
         return this.usersRepo.save(user);
     }
 
+    // Update User
     async update(id_user: number, dto: UpdateUserDto): Promise<Users | null> {
         const partial: Partial<Users> = { ...dto };
 
@@ -53,6 +55,7 @@ export class UsersService {
         return this.findOne(id_user);
     }
 
+    // Delete User
     async remove(id_user: number): Promise<void> {
         await this.usersRepo.delete(id_user);
     }

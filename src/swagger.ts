@@ -1,6 +1,7 @@
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { INestApplication } from '@nestjs/common';
 
+// SETUP SWAGGER for API Documentation
 export function setupSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('FlowCommerce API')

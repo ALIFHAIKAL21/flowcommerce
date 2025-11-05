@@ -17,7 +17,7 @@ export class AuthService {
 
   // REGISTER
   async register(dto: CreateUserDto) {
-    // cek username unik
+    // Check if username already exists
     const existing = await this.usersService.findByUsername(dto.username);
     if (existing) {
       throw new ConflictException('Username already taken');

@@ -15,7 +15,7 @@ export class ProductsService {
     private readonly categoriesRepo: Repository<Categories>,
   ) {}
 
-  //  Ambil semua produk
+  //  Get All Products
   async findAll(): Promise<Products[]> {
     return this.productsRepo.find({
       relations: ['categories'],
@@ -23,7 +23,7 @@ export class ProductsService {
     });
   }
 
-  // Ambil 1 produk by ID
+  // Get Product by ID
   async findOne(id_product: number): Promise<Products> {
     const product = await this.productsRepo.findOne({
       where: { id_product },
@@ -41,7 +41,7 @@ async save(product: Products): Promise<Products> {
   return this.productsRepo.save(product);
 }
 
-  // Buat produk baru
+  // Create New Product
   async create(dto: CreateProductDto): Promise<Products> {
     const category = await this.categoriesRepo.findOneBy({
       id_category: dto.categoryId,
@@ -63,7 +63,7 @@ async save(product: Products): Promise<Products> {
     return await this.productsRepo.save(newProduct);
   }
 
-  //  Update produk
+  //  Update product
   async update(id_product: number, dto: UpdateProductDto): Promise<Products> {
     const product = await this.productsRepo.findOne({
       where: { id_product },
@@ -74,7 +74,7 @@ async save(product: Products): Promise<Products> {
       throw new NotFoundException(`Product with id ${id_product} not found`);
     }
 
-    // KalO ada kategori baru
+    // iF categoryId is provided, update the category
     if (dto.categoryId) {
       const category = await this.categoriesRepo.findOneBy({
         id_category: dto.categoryId,
@@ -86,14 +86,14 @@ async save(product: Products): Promise<Products> {
 
       product.categories = category;
     }
-    // Update semua field yang dikirim
+    // Update other fields
     Object.assign(product, dto);
 
     await this.productsRepo.save(product);
     return this.findOne(id_product);
   }
 
-  // Hapus produk
+  // dELETE product
   async remove(id_product: number): Promise<void> {
     const result = await this.productsRepo.delete(id_product);
     if (result.affected === 0) {

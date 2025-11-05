@@ -26,12 +26,14 @@ interface AuthRequest extends Request {
 export class CartsController {
   constructor(private readonly cartsService: CartsService) {}
 
+  // Get All Carts
   @Get()
   @Roles('admin')
   async findAll() {
     return this.cartsService.findAll();
   }
 
+  // Get Carts of Logged-in User
   @Get('me')
   async findMyCart(@Req() req: AuthRequest) {
     const userId = req.user.userId;
@@ -39,6 +41,7 @@ export class CartsController {
     return cart.filter((item) => item.user.id_user === userId);
   }
 
+  // Get Cart by ID
   @Get(':id_cart')
   async findOne(@Param('id_cart') id_cart: number) {
     const cart = await this.cartsService.findOne(id_cart);
@@ -46,12 +49,14 @@ export class CartsController {
     return cart;
   }
 
+  // Create New Cart
   @Post()
   async create(@Req() req: AuthRequest, @Body() dto: CreateCartDto) {
     const userId = req.user.userId;
     return this.cartsService.create({ ...dto, userId });
   }
 
+  // Update Cart
   @Put(':id_cart')
   async update(@Param('id_cart') id_cart: number, @Body() dto: UpdateCartDto) {
     const updated = await this.cartsService.update(id_cart, dto);
@@ -59,6 +64,7 @@ export class CartsController {
     return updated;
   }
 
+  // Clear Logged-in User's Cart
 @Delete('me/clear')
 async clearMyCart(@Req() req: AuthRequest) {
   const userId = req.user.userId;
@@ -66,6 +72,7 @@ async clearMyCart(@Req() req: AuthRequest) {
   return { message: 'Your cart has been cleared' };
 }
 
+// Delete Cart
   @Delete(':id_cart')
   async remove(@Param('id_cart') id_cart: number) {
     await this.cartsService.remove(id_cart);

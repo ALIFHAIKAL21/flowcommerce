@@ -38,8 +38,6 @@ import { AppController } from './app.controller';
         ssl: { rejectUnauthorized: false },
       },
     }),
-
-
     //Core Business Modules
     AuthModule,
     UsersModule,

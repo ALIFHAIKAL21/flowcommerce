@@ -17,6 +17,7 @@ export class PaymentController {
     private readonly ordersRepo: Repository<Orders>,
   ) {}
 
+  // process STRIPE WEBHOOKS
   @Post('webhook')
   async handleWebhook(@Req() req: any, @Headers('stripe-signature') sig: string) {
     console.log('✅ Webhook received');
@@ -29,7 +30,7 @@ export class PaymentController {
     let event: Stripe.Event;
 
     try {
-      // gunakan req.body mentah (karena express.raw)
+     
       event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret!);
     } catch (err) {
       console.error('❌ Webhook signature failed:', (err as Error).message);

@@ -18,7 +18,7 @@ async function bootstrap() {
 
   console.log('🧩 Starting seed process...');
 
-  // 💣 Bersihkan tabel agar FK tidak bentrok
+  // Clear existing data
   await dataSource.query(`
     TRUNCATE TABLE 
       order_items,
@@ -31,14 +31,14 @@ async function bootstrap() {
   `);
   console.log('🧹 Cleared all tables (CASCADE)');
 
-  // 🧱 Repositories
+  // Repositories
   const usersRepo = dataSource.getRepository(Users);
   const catRepo = dataSource.getRepository(Categories);
   const prodRepo = dataSource.getRepository(Products);
   const cartRepo = dataSource.getRepository(Carts);
   const orderRepo = dataSource.getRepository(Orders);
 
-  // 👥 USERS
+  // USERS
   const admin = usersRepo.create({
     username: 'admin',
     password: await bcrypt.hash('admin123', 10),
@@ -58,7 +58,7 @@ async function bootstrap() {
   await usersRepo.save(allUsers);
   console.log('✅ Users created:', allUsers.length);
 
-  // 🏷️ CATEGORIES
+  // CATEGORIES
   const categoryData = [
     { name: 'Electronics', description: 'Gadgets and devices' },
     { name: 'Fashion', description: 'Clothes, shoes, and accessories' },
@@ -70,7 +70,7 @@ async function bootstrap() {
   await catRepo.save(categories);
   console.log('✅ Categories created:', categories.length);
 
-  // 🛍️ PRODUCTS (Cloudinary-ready)
+  //  PRODUCTS (Cloudinary-ready)
   const productTemplates = [
     {
       name: 'Wireless Headphones',
@@ -159,13 +159,13 @@ async function bootstrap() {
   await prodRepo.save(products);
   console.log('✅ Products created:', products.length);
 
-  // 🛒 CARTS
+  //  CARTS
   const randomUser = (users: Users[]) =>
-    users[randomBetween(1, users.length - 1)]; // skip admin
+    users[randomBetween(1, users.length - 1)]; 
   const randomProduct = () =>
     products[randomBetween(0, products.length - 1)];
 
-  const cartItems: Carts[] = []; // ✅ fix typing
+  const cartItems: Carts[] = []; 
   for (let i = 0; i < 10; i++) {
     const user = randomUser(allUsers);
     const product = randomProduct();
@@ -184,8 +184,8 @@ async function bootstrap() {
   await cartRepo.save(cartItems);
   console.log('✅ Cart items created:', cartItems.length);
 
-  // 📦 ORDERS
-  const randomOrders: Orders[] = []; // ✅ fix typing
+  //  ORDERS
+  const randomOrders: Orders[] = []; // fix typing
   for (let i = 0; i < 5; i++) {
     const user = randomUser(allUsers);
     const total = randomBetween(50, 500);

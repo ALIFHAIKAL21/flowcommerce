@@ -78,7 +78,7 @@ export class ProductsController {
     };
   }
 
-  // UPLOAD PRODUCT + IMAGE SEKALIGUS
+  // UPLOAD PRODUCT + IMAGE 
   @Post('upload')
   @Roles('admin')
   @UseInterceptors(FileInterceptor('file'))
@@ -102,7 +102,7 @@ export class ProductsController {
     };
   }
 
-  // CREATE PRODUCT (Tanpa Gambar)
+  // CREATE PRODUCT (WITHOUT IMAGE UPLOAD)
   @Post()
   @Roles('admin')
   async create(@Body() dto: CreateProductDto): Promise<Products> {

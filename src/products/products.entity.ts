@@ -39,8 +39,6 @@ export class Products {
   @UpdateDateColumn()
   updated_at: Date;
 
-  
-
 
   @ManyToOne(() => Categories, (categories) => categories.products, {
     eager: true,

@@ -14,6 +14,7 @@ export class CartsService {
     @InjectRepository(Users) private usersRepo: Repository<Users>,
   ) { }
 
+  // Get All Carts
   async findAll(): Promise<Carts[]> {
     return this.cartsRepo.find({
       relations: ['user', 'product'],
@@ -21,6 +22,7 @@ export class CartsService {
     });
   }
 
+  // Get Cart by ID
   async findOne(id_cart: number): Promise<Carts | null> {
     return this.cartsRepo.findOne({
       where: { id_cart },
@@ -28,6 +30,7 @@ export class CartsService {
     });
   }
 
+  // Create New Cart
 async create(dto: CreateCartDto): Promise<Carts> {
    
     const user = await this.usersRepo.findOneBy({ id_user: dto.userId });
@@ -69,6 +72,7 @@ async create(dto: CreateCartDto): Promise<Carts> {
     return this.cartsRepo.save(cart);
   }
 
+  // Update Cart
 async update(id_cart: number, dto: UpdateCartDto): Promise<Carts | null> {
   
   const cart = await this.cartsRepo.findOne({
@@ -98,6 +102,7 @@ async update(id_cart: number, dto: UpdateCartDto): Promise<Carts | null> {
   return this.findOne(id_cart); 
 }
 
+// Delete Cart
   async remove(id_cart: number): Promise<void> {
     const result = await this.cartsRepo.delete(id_cart);
     if (result.affected === 0) {
@@ -105,6 +110,7 @@ async update(id_cart: number, dto: UpdateCartDto): Promise<Carts | null> {
     }
   }
 
+  // Clear User's Cart
   async clearUserCart(userId : number) : Promise<void> {
     await  this.cartsRepo.delete({user : {id_user : userId}})
   }

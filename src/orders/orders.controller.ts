@@ -27,25 +27,33 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) { }
 
 
+  // Get All Orders
+  @Get()
+  @Roles('admin')
+  findAll() {
+    return this.ordersService.findAll();
+  }
 
+  // Get Orders of Logged-in User
   @Get('me')
   findMine(@Req() req: AuthRequest) {
     return this.ordersService.findMine(req.user.userId);
   }
 
-
+// Get Order by ID
   @Get(':id_order')
   findOne(@Param('id_order') id_order: number) {
     return this.ordersService.findOne(id_order);
   }
 
+  // Checkout - Create Order from Cart
   @Post('checkout')
   @Roles('customer', 'admin')
   checkout(@Req() req: AuthRequest) {
     return this.ordersService.checkout(req.user.userId);
   }
 
-
+// Update Order Status
   @Put(':id_order/status')
   @Roles('admin')
   updateStatus(
@@ -56,7 +64,7 @@ export class OrdersController {
   }
 
 
-
+// Delete Order
   @Delete(':id_order')
   @Roles('admin')
   remove(@Param('id_order') id_order: number) {

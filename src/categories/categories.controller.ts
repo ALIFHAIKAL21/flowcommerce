@@ -21,11 +21,13 @@ import { Roles } from '../auth/roles.decorator';
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
+  // Get All Categories
   @Get()
   findAll(): Promise<Categories[]> {
     return this.categoriesService.findAll();
   }
 
+  // Get Category by ID
   @Get(':id_category')
   async findOne(@Param('id_category') id_category: number): Promise<Categories> {
     const category = await this.categoriesService.findOne(id_category);
@@ -35,12 +37,14 @@ export class CategoriesController {
     return category;
   }
 
+  // Create New Category
   @Post()
   @Roles('admin')
   create(@Body() dto: CreateCategoryDto): Promise<Categories> {
     return this.categoriesService.create(dto);
   }
 
+  // Update Category
   @Put(':id_category')
   @Roles('admin')
   async update(
@@ -54,6 +58,7 @@ export class CategoriesController {
     return updated;
   }
 
+  //  Delete Category
   @Delete(':id_category')
   @Roles('admin')
   remove(@Param('id_category') id_category: number): Promise<void> {

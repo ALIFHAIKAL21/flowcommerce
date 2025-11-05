@@ -14,12 +14,14 @@ function stripPassword(u: Users): Omit<Users, 'password'> {
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  // Get All Users
   @Get()
   async findAll(): Promise<Array<Omit<Users, 'password'>>> {
     const list = await this.usersService.findAll();
     return list.map(stripPassword);
   }
 
+  // Get User by ID
   @Get(':id_user')
   async findOne(@Param('id_user') id_user: number): Promise<Omit<Users, 'password'>> {
     const user = await this.usersService.findOne(id_user);
@@ -27,12 +29,14 @@ export class UsersController {
     return stripPassword(user);
   }
 
+  // Create New User
   @Post()
   async create(@Body() dto: CreateUserDto): Promise<Omit<Users, 'password'>> {
     const user = await this.usersService.create(dto);
     return stripPassword(user);
   }
 
+  // Update User
   @Put(':id_user')
   async update(
     @Param('id_user') id_user: number,
@@ -43,6 +47,7 @@ export class UsersController {
     return stripPassword(updated);
   }
 
+  // Delete User
   @Delete(':id_user')
   remove(@Param('id_user') id_user: number): Promise<void> {
     return this.usersService.remove(id_user);

@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { Readable } from 'stream';
 
 @Injectable()
+// UPLOAD SERVICE
 export class UploadService {
   constructor(private configService: ConfigService) {
     const cloudName = this.configService.get<string>('CLOUDINARY_CLOUD_NAME');
@@ -14,7 +15,7 @@ export class UploadService {
       console.error('❌ Missing Cloudinary environment variables');
     }
 
-    // ✅ Konfigurasi manual (cara paling aman)
+    
     cloudinary.config({
       cloud_name: cloudName,
       api_key: apiKey,
@@ -23,7 +24,8 @@ export class UploadService {
 
     console.log('✅ Cloudinary configuration success');
   }
-
+  
+  // UPLOAD FILE TO CLOUDINARY
   async uploadFile(file: Express.Multer.File): Promise<any> {
     try {
       return new Promise((resolve, reject) => {

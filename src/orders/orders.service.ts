@@ -37,6 +37,7 @@ export class OrdersService {
     private readonly paymentservice: PaymentService,
   ) {}
 
+  // Get All Orders
   async findAll(): Promise<Orders[]> {
     return this.ordersRepo.find({
       relations: ['items', 'items.product', 'user'],
@@ -44,6 +45,7 @@ export class OrdersService {
     });
   }
 
+  // Get Orders of Logged-in User
   async findMine(userId: number): Promise<Orders[]> {
     return this.ordersRepo.find({
       where: { user: { id_user: userId } },
@@ -52,6 +54,7 @@ export class OrdersService {
     });
   }
 
+  // Get Order by ID
   async findOne(id_order: number): Promise<Orders> {
     const order = await this.ordersRepo.findOne({
       where: { id_order },
@@ -63,6 +66,7 @@ export class OrdersService {
     return order;
   }
 
+  // Checkout - Create Order from Cart
 async checkout(userId: number): Promise<{ order: Orders; clientSecret: string }> {
   const user = await this.usersRepo.findOneBy({ id_user: userId });
   if (!user) throw new NotFoundException(`User with id ${userId} not found`);
@@ -146,6 +150,7 @@ async checkout(userId: number): Promise<{ order: Orders; clientSecret: string }>
 }
 
 
+// Update Order Status
   async updateStatus(
     id_order: number,
     dto: UpdateOrderStatusDto,
@@ -156,17 +161,19 @@ async checkout(userId: number): Promise<{ order: Orders; clientSecret: string }>
     return this.findOne(id_order);
   }
 
+  // Delete Order
   async remove(id_order: number): Promise<void> {
     const result = await this.ordersRepo.delete(id_order);
     if (result.affected === 0) {
       throw new NotFoundException(`Order with id ${id_order} not found`);
     }
   }
-
+// Find Order by Payment Intent ID
   async findByPaymentIntent(paymentIntentId: string) {
   return this.ordersRepo.findOne({ where: { payment_intent_id: paymentIntentId } });
 }
 
+// Save Order
 async save(order: Orders) {
   return this.ordersRepo.save(order);
 }
