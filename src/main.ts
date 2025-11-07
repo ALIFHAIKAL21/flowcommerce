@@ -14,7 +14,7 @@ async function bootstrap() {
   const expressApp = app.getHttpAdapter().getInstance();
 
   // Serve static files from /public
- app.useStaticAssets(join(process.cwd(), 'public'));
+  app.useStaticAssets(join(process.cwd(), 'public'));
 
   // Stripe Webhook
   expressApp.use('/payment/webhook', express.raw({ type: 'application/json' }));
@@ -44,7 +44,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // === Project Overview (Ultra-Polished) ===
+  // Basic Route
   expressApp.get('/', (_req, res) => {
     const baseUrl = process.env.RENDER_EXTERNAL_URL || 'http://localhost:3000';
     res.type('html').send(`
@@ -185,6 +185,8 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
           <span class="tag">Render Deploy</span>
           <span class="tag">Neon Postgres</span>
           <span class="tag">OpenAPI/Swagger</span>
+          <span class="tag">Unit Testing With Jest</span>
+          <span class="tag">E2e Testing Example For Users Module</span>
         </div>
       </section>
 
@@ -321,12 +323,12 @@ function copyEnv(){
 </body>
 </html>
     `);
+
   }); const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');
 
   console.log(`🚀 Server running at ${baseUrlFromEnv()}`);
-  console.log('📘 Swagger: /api/docs');
-  console.log('📄 Overview: /');
+  console.log(`📘 Swagger: ${baseUrlFromEnv()}/api/docs`);
 }
 
 function baseUrlFromEnv() {
