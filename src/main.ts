@@ -201,8 +201,8 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
           <li><b>Stripe Integration</b> — PaymentIntent + <span class="kbd">/payment/webhook</span> handler</li>
           <li><b>Cloudinary</b> — media uploads via upload_stream</li>
           <li><b>Swagger</b> — auto API docs</li>
-          <li><b>Swagger</b> — Unit Testing For All Modules With Jest</li>
-          <li><b>Swagger</b> — E2e Testing Example</li>
+          <li>Unit Testing For All Modules With Jest</li>
+          <li>E2e Testing Example</li>
         </ul>
         <div class="hr"></div>
         <div>
