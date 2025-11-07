@@ -140,7 +140,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
 <body>
   <div class="container">
     <section class="hero">
-      <span class="badge">🚀 Project Overview</span>
+      <span class="badge">Project Overview</span>
       <h1>FlowCommerce</h1>
       <p>
         A modern, scalable, and developer-friendly <b>e-commerce backend platform</b> engineered with <span class="kbd">NestJS</span> and powered by <span class="kbd">PostgreSQL (Neon)</span>. 
@@ -157,7 +157,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
     <div class="grid">
       <!-- Tech Stack -->
       <section class="card">
-        <h2>🧩 Tech Stack & Vendors</h2>
+        <h2>Tech Stack & Vendors</h2>
         <p class="small">All technologies used are production-grade and battle-tested.</p>
         <div class="logo-grid" style="margin-top:12px">
           <div class="logo"><img alt="NestJS" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg"></div>
@@ -192,7 +192,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
 
       <!-- Modules & Capabilities -->
       <section class="card">
-        <h2>🧠 Capabilities</h2>
+        <h2> Capabilities</h2>
         <ul>
           <li><b>Authentication</b> (Register/Login) & <b>JWT Authorization</b></li>
           <li><b>Role-based Access Control</b> (Admin/Customer)</li>
@@ -214,7 +214,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
 
     <!-- ERD -->
    <section class="card" style="margin-top:12px">
-  <h2>🗺️ Entity Relationship Diagram (ERD)</h2>
+  <h2> Entity Relationship Diagram (ERD)</h2>
   <p class="small">Database schema visualization generated from PostgreSQL (Neon).</p>
   <div class="erd" style="background:#0b1220;border-radius:12px;padding:12px">
     <img src="/erd.svg" alt="FlowCommerce ERD" style="width:100%;border-radius:12px;">
@@ -224,7 +224,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
 
     <!-- Folder Structure -->
     <section class="card" style="margin-top:12px">
-      <h2>📁 Folder Structure</h2>
+      <h2>Folder Structure</h2>
      <pre><code>flowcommerce/
 ├─ dist/
 ├─ node_modules/
@@ -276,7 +276,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
 
     <!-- ENV -->
     <section class="card" style="margin-top:12px">
-      <h2>🔐 Environment Variables</h2>
+      <h2>Environment Variables</h2>
       <button class="button copy" onclick="copyEnv()">Copy</button>
       <pre id="env"><code>DATABASE_URL=postgres://user:pass@neon.host/db
 JWT_SECRET=supersecretkey
@@ -295,7 +295,7 @@ RENDER_EXTERNAL_URL=${baseUrl}</code></pre>
 
     <!-- Endpoints -->
     <section class="card" style="margin-top:16px">
-      <h2>🔗 Useful Links & Endpoints</h2>
+      <h2>Useful Links & Endpoints</h2>
       <ul>
         <li>Base URL: <span class="kbd">${baseUrl}</span></li>
         <li>Swagger Docs: <a href="/api/docs" target="_blank">/api/docs</a></li>
