@@ -185,8 +185,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
           <span class="tag">Render Deploy</span>
           <span class="tag">Neon Postgres</span>
           <span class="tag">OpenAPI/Swagger</span>
-          <span class="tag">Unit Testing With Jest</span>
-          <span class="tag">E2e Testing Example For Users Module</span>
+       
         </div>
       </section>
 
@@ -202,6 +201,8 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
           <li><b>Stripe Integration</b> — PaymentIntent + <span class="kbd">/payment/webhook</span> handler</li>
           <li><b>Cloudinary</b> — media uploads via upload_stream</li>
           <li><b>Swagger</b> — auto API docs</li>
+          <li><b>Swagger</b> — Unit Testing For All Modules With Jest</li>
+          <li><b>Swagger</b> — E2e Testing Example</li>
         </ul>
         <div class="hr"></div>
         <div>
