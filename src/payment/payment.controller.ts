@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import Stripe from 'stripe';
 import { Orders } from '../orders/orders.entity';
 
+// Payment Controller to handle Stripe webhooks
 @Controller('payment')
 export class PaymentController {
   private stripe: Stripe;
@@ -17,12 +18,11 @@ export class PaymentController {
     });
   }
 
-  // Stripe Webhook handler
-// payment.controller.ts (potongan)
+ // Handle Stripe Webhook
 @Post('webhook')
 @HttpCode(200)
 async handleWebhook(@Req() req: any, @Headers('stripe-signature') signature: string) {
-  // Kalau simulasi dari UI (tanpa signature)
+ 
   if (!signature) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const paymentIntentId = body?.data?.object?.id;
@@ -41,20 +41,17 @@ async handleWebhook(@Req() req: any, @Headers('stripe-signature') signature: str
     return { received: false, message: 'No order found for simulation' };
   }
 
-  // --- real Stripe webhook ---
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
   let event;
-
   try {
-    // Pastikan kita kirim Buffer ke constructEvent.
-    // express.raw({type:'application/json'}) akan membuat req.body = Buffer
+  
     const rawBody = Buffer.isBuffer(req.body) ? req.body : Buffer.from(typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
-    // Optional: log info kecil
+ 
     console.log('Webhook raw body length:', rawBody.length);
     event = this.stripe.webhooks.constructEvent(rawBody, signature, endpointSecret);
   } catch (err) {
     console.error('❌ Webhook signature failed:', (err as Error).message);
-    // kembalikan 400 tanpa throw ke client jika mau; tapi BadRequestException juga oke
+   
     throw new BadRequestException(`Webhook Error: ${(err as Error).message}`);
   }
 
@@ -81,5 +78,7 @@ async handleWebhook(@Req() req: any, @Headers('stripe-signature') signature: str
 
   return { received: true };
 }
+
+
 
 }

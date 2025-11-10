@@ -14,10 +14,10 @@ async function bootstrap() {
 
   const expressApp = app.getHttpAdapter().getInstance();
 
-  // ✅ Tempatkan handler RAW sebelum json() agar /payment/webhook tidak ikut di-parse
+  // Express Body Parsers
   expressApp.use('/payment/webhook', raw({ type: 'application/json' }));
 
-  // ✅ Gunakan JSON parser global untuk route lain
+  //  General JSON parser
   expressApp.use(json());
 
   // Static
@@ -30,6 +30,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
       transform: true,
       transformOptions: { enableImplicitConversion: true },
+       disableErrorMessages: process.env.NODE_ENV === 'production',
     }),
   );
 
@@ -58,87 +59,355 @@ async function bootstrap() {
 <title>FlowCommerce — Overview</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-
-:root{
-  --primary:#1AA3A1; --primary-2:#0f766e;
-  --ink:#0b1220; --muted:#6b7280; --fg:#111827; --bg:#0b1220; --card:#0f1629;
-  --glass:rgba(255,255,255,0.06); --br:16px;
-  --shadow:0 10px 40px rgba(0,0,0,.35);
-  --grad:linear-gradient(135deg,#17b2b0 0%,#1AA3A1 40%,#6ee7b7 100%);
-  --grad2:radial-gradient(1000px 600px at 20% -10%, #16a34a22 0%, transparent 60%),
-           radial-gradient(900px 500px at 120% 40%, #06b6d422 0%, transparent 60%);
-}
-*{box-sizing:border-box} html,body{height:100%}
-body{
-  margin:0; font-family:Inter,system-ui,Segoe UI,Arial; color:#e5e7eb;
-  background:var(--bg); background-image:var(--grad2);
-}
-.container{max-width:1200px;margin:0 auto;padding:28px}
-.hero{
-  background:linear-gradient(180deg,rgba(26,163,161,.25),rgba(26,163,161,.05));
-  border:1px solid #1AA3A144; border-radius:24px; padding:34px; position:relative; overflow:hidden;
-  box-shadow:var(--shadow);
-}
-.hero .badge{display:inline-flex;align-items:center;gap:8px;
-  background:var(--glass);border:1px solid #ffffff22;border-radius:999px;padding:8px 14px;
-  backdrop-filter: blur(6px); font-size:12px; color:#cbd5e1;
-}
-.hero h1{margin:14px 0 10px; font-size:34px; font-weight:800; letter-spacing:.3px}
-.hero p{margin:0; color:#cbd5e1; max-width:900px; line-height:1.7}
-.hero .actions{margin-top:18px; display:flex; gap:12px; flex-wrap:wrap}
-.button{
-  display:inline-flex;align-items:center;gap:10px; text-decoration:none; cursor:pointer;
-  background:var(--grad); color:#062b29; font-weight:800; padding:12px 16px; border-radius:12px;
-  border:0; transition:.2s transform; box-shadow:0 8px 24px rgba(23,178,176,.35);
-}
-.button:hover{transform:translateY(-1px)}
-.button.ghost{background:transparent;color:#cbd5e1;border:1px solid #ffffff33; box-shadow:none}
-.grid{ display:grid; gap:18px; margin-top:28px}
-@media(min-width:1000px){ .grid{ grid-template-columns: 1.1fr 1fr } }
-
-.card{
-  background:var(--card); border:1px solid #ffffff14; border-radius:var(--br); padding:22px;
-  box-shadow:var(--shadow);
-}
-.card h2{margin:0 0 12px; font-size:18px; font-weight:800; color:#e8faf9}
-.card p, .card li, .small{color:#cbd5e1}
-.kbd{font-family:ui-monospace,Menlo,Consolas; background:#0b1322; border:1px solid #ffffff1a; padding:3px 6px; border-radius:8px}
-.hr{height:1px;background:#ffffff18;margin:16px 0}
-
-.logo-grid{
-  display:grid; gap:16px; grid-template-columns:repeat(4,1fr);
-}
-.logo{
-  background:var(--glass); border:1px solid #ffffff1f; border-radius:14px; padding:14px; display:flex; align-items:center; justify-content:center;
-}
-.logo img{max-width:86px; max-height:38px; opacity:.95; filter:drop-shadow(0 4px 10px rgba(0,0,0,.25))}
-@media(max-width:720px){ .logo-grid{grid-template-columns:repeat(2,1fr)} }
-
-.flex{display:flex; gap:12px; flex-wrap:wrap}
-.tag{
-  background:#1AA3A11a; border:1px solid #1AA3A166; color:#d1fae5; border-radius:999px; padding:6px 10px; font-size:12px; font-weight:700
+/* ========== ROOT VARIABLES ========== */
+/* ===============================
+   VARIABLES & GLOBAL BASE
+================================= */
+:root {
+  --primary: #1AA3A1;
+  --primary-2: #0f766e;
+  --ink: #0b1220;
+  --muted: #6b7280;
+  --fg: #111827;
+  --bg: #0b1220;
+  --card: #0f1629;
+  --glass: rgba(255, 255, 255, 0.06);
+  --br: 16px;
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  --grad: linear-gradient(135deg, #17b2b0 0%, #1AA3A1 40%, #6ee7b7 100%);
+  --grad2:
+    radial-gradient(1000px 600px at 20% -10%, #16a34a22 0%, transparent 60%),
+    radial-gradient(900px 500px at 120% 40%, #06b6d422 0%, transparent 60%);
 }
 
-pre{
-  background:#0b1322; color:#e5e7eb; padding:14px 16px; border:1px solid #ffffff12; border-radius:12px; overflow:auto;
+* {
+  box-sizing: border-box;
 }
-.copy{float:right; margin-top:-6px; transform:translateY(-4px)}
-ul{padding-left:18px;margin:0}
-li+li{margin-top:6px}
-a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
 
-.erd{
-  background:#0b1322; border:1px solid #ffffff14; border-radius:16px; padding:10px;
+html, body {
+  height: 100%;
 }
-.erd img{width:100%; border-radius:12px}
-.erd svg text{font-family:Inter,system-ui,sans-serif}
 
-.footer{
-  margin-top:26px; color:#93a3b5; text-align:center; font-size:13px
+body {
+  margin: 0;
+  font-family: Inter, system-ui, Segoe UI, Arial, sans-serif;
+  color: #e5e7eb;
+  background: var(--bg);
+  background-image: var(--grad2);
+  padding-top: 72px; /* compensate for fixed navbar */
 }
-.status-dot{width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:6px}
-.ok{background:#10b981}.warn{background:#f59e0b}.bad{background:#ef4444}
 
+/* ===============================
+   NAVBAR
+================================= */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  display: flex;
+  align-items: center; /* sejajarkan vertikal */
+  justify-content: space-between;
+  padding: 0 48px; /* sedikit lebih seimbang kiri-kanan */
+  background: rgba(11, 18, 32, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #0f1724;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  z-index: 2000;
+  line-height: 1; /* penting: nolkan efek line-height */
+  font-size: 0; /* reset spacing whitespace antarelemen */
+}
+
+.navbar .brand {
+  display: inline-flex;
+  align-items: center;
+  height: 72px;
+  font-size: 16px; /* reset kembali setelah font-size:0 di parent */
+}
+
+.navbar .brand h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 72px; /* pastikan tinggi vertikal pas */
+  display: inline-block;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  height: 72px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 15px; /* reset lagi font size */
+  gap: 28px;
+}
+
+.nav-links li {
+  height: 72px;
+  display: flex;
+  align-items: center;
+}
+
+.nav-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+  padding: 0 10px;
+  font-weight: 700;
+  color: #e5e7eb;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+}
+
+.nav-links a:hover,
+.nav-links a:focus {
+  color: #6ee7b7;
+  background: rgba(110, 231, 183, 0.04);
+  transform: translateY(-1px);
+}
+
+
+/* ===============================
+   LAYOUT HELPERS
+================================= */
+.container {
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 28px;
+}
+
+.flex {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ===============================
+   HERO SECTION
+================================= */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 14px 50px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero .badge {
+  display: inline-block;
+  background: rgba(110, 231, 183, 0.15);
+  color: #6ee7b7;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(110, 231, 183, 0.3);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+ 
+}
+
+.hero h1 {
+  font-size: 54px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 22px;
+}
+
+.hero p {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #d1d5db;
+  margin-bottom: 36px;
+  max-width: 720px;
+}
+
+.hero .tech-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  margin-bottom: 48px;
+}
+
+.hero .tech-logos img {
+  height: 85px;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));
+  transition: transform 0.2s ease;
+}
+
+.hero .tech-logos img:hover {
+  transform: scale(1.08);
+}
+
+.hero .actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.hero .button {
+  padding: 12px 22px;
+  font-weight: 700;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #fff;
+  background: linear-gradient(90deg, #17aeaeff, #1896b6ff);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.hero .button:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.hero .button.ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* ===============================
+   GRID & CARDS
+================================= */
+.grid {
+  display: grid;
+  gap: 18px;
+  margin-top: 28px;
+}
+@media (min-width: 1000px) {
+  .grid {
+    grid-template-columns: 1.1fr 1fr;
+  }
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid #ffffff14;
+  border-radius: var(--br);
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+.card h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #e8faf9;
+}
+
+.card p,
+.card li,
+.small {
+  color: #cbd5e1;
+}
+
+/* ===============================
+   LOGO GRID
+================================= */
+.logo-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+}
+@media (max-width: 720px) {
+  .logo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.logo {
+  background: var(--glass);
+  border: 1px solid #ffffff1f;
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo img {
+  max-width: 86px;
+  max-height: 38px;
+  opacity: 0.95;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
+}
+
+/* ===============================
+   TEXT & LISTS
+================================= */
+ul {
+  padding-left: 18px;
+  margin: 0;
+}
+li + li {
+  margin-top: 6px;
+}
+
+a {
+  color: #7dd3fc;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.kbd {
+  font-family: ui-monospace, Menlo, Consolas;
+  background: #0b1322;
+  border: 1px solid #ffffff1a;
+  padding: 3px 6px;
+  border-radius: 8px;
+}
+
+.hr {
+  height: 1px;
+  background: #ffffff18;
+  margin: 16px 0;
+}
+
+.tag {
+  background: #1AA3A11a;
+  border: 1px solid #1AA3A166;
+  color: #d1fae5;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ===============================
+   ERD BLOCK
+================================= */
+.erd {
+  background: #0b1322;
+  border: 1px solid #ffffff14;
+  border-radius: 16px;
+  padding: 10px;
+}
+
+.erd img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.erd svg text {
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* ===============================
+   API TESTER
+================================= */
 .apitester {
   background: var(--card);
   border: 1px solid #ffffff12;
@@ -173,7 +442,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
   margin-right: 6px;
   margin-bottom: 6px;
   outline: none;
-  transition: border-color .2s, box-shadow .2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 .apitester input:focus {
   border-color: #1AA3A1;
@@ -188,12 +457,12 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
   font-weight: 700;
   padding: 8px 14px;
   cursor: pointer;
-  transition: all .2s ease;
-  box-shadow: 0 4px 12px rgba(23,178,176,.3);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(23, 178, 176, 0.3);
 }
 .apitester button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(23,178,176,.4);
+  box-shadow: 0 6px 16px rgba(23, 178, 176, 0.4);
 }
 
 .apitester pre {
@@ -221,35 +490,134 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
   font-size: 12px;
 }
 
-/* Subtle divider */
 .apitester .step {
   border-left: 3px solid #1AA3A1;
   padding-left: 12px;
   margin-bottom: 12px;
 }
 
+/* ===============================
+   FOOTER
+================================= */
+.footer {
+  margin-top: 26px;
+  color: #93a3b5;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* ===============================
+   STATUS DOTS
+================================= */
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-right: 6px;
+}
+.ok { background: #10b981; }
+.warn { background: #f59e0b; }
+.bad { background: #ef4444; }
+
 </style>
 </head>
 <body>
-  <div class="container">
-    <section class="hero">
-      <span class="badge">Project Overview</span>
-      <h1>FlowCommerce</h1>
-      <p>
-        A modern, scalable, and developer-friendly <b>e-commerce backend platform</b> engineered with <span class="kbd">NestJS</span> and powered by <span class="kbd">PostgreSQL (Neon)</span>. 
-        It implements end-to-end commerce logic—<b>Authentication</b>, <b>RBAC</b>, <b>Catalog</b>, <b>Cart</b>, <b>Orders</b>, and <b>Payments</b>—with seamless <b>Stripe</b> integration, 
-        <b>Cloudinary</b> media uploads, <b>TypeORM</b> modeling, and GitHub → Render CI/CD for hands-off deployments.
-      </p>
-      <div class="actions">
-        <a class="button" href="/api/docs" target="_blank">📘 Swagger API Docs</a>
-        <a class="button ghost" href="https://flowcommerce.onrender.com" target="_blank">🌐 Deployed API</a>
-        <a class="button ghost" href="https://github.com/ALIFHAIKAL21/flowcommerce" target="_blank" rel="noopener">⭐ GitHub (Repo)</a>
-      </div>
-    </section>
+<nav class="navbar">
+  <div class="brand">
+    <h1>FlowCommerce</h1>
+  </div>
 
-    <div class="grid">
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#apitester">Api Tester</a></li>
+    <li><a href="#tech">Tech Stack</a></li>
+    <li><a href="#erd">ERD</a></li>
+    <li><a href="#folder">Folder</a></li>
+    <li><a href="#env">ENV</a></li>
+    <li><a href="#endpoints">Endpoints</a></li>
+  </ul>
+</nav>
+
+  <div class="container">
+<section class="hero" id="overview">
+  <span class="badge">Project Overview</span>
+  <h1>FlowCommerce</h1>
+  <p>
+    A modern, scalable, and developer-friendly <b>e-commerce backend platform</b> engineered with 
+    <span class="kbd">NestJS</span> and powered by <span class="kbd">PostgreSQL (Neon)</span>. 
+    It implements end-to-end commerce logic — <b>Authentication</b>, <b>RBAC</b>, <b>Catalog</b>, <b>Cart</b>, 
+    <b>Orders</b>, and <b>Payments</b> — with seamless <b>Stripe</b> integration, 
+    <b>Cloudinary</b> media uploads, <b>TypeORM</b> modeling, and GitHub → Render CI/CD for hands-off deployments.
+  </p>
+  <div class="tech-logos">
+    <img src="https://nestjs.com/img/logo-small.svg" alt="NestJS" />
+    <img src="https://www.postgresql.org/media/img/about/press/elephant.png" alt="PostgreSQL" />
+    <img src="https://cdn.worldvectorlogo.com/logos/stripe-4.svg" alt="Stripe" />
+  </div>
+
+  <div class="actions">
+    <a class="button" href="/api/docs" target="_blank"> Swagger API Docs</a>
+    <a class="button ghost" href="https://github.com/ALIFHAIKAL21/flowcommerce" target="_blank" rel="noopener">GitHub (Repo)</a>
+  </div>
+</section>
+
+
+<section id="apitester" style="margin-top:18px;">
+
+  <div class="apitester card">
+    <h2>Mini API Flow Tester</h2>
+    <small>Simulate the end-to-end API workflow directly in your browser.</small>
+
+    <!-- STEP 1: Register / Login -->
+    <div class="step">
+      <h3>1. Register / Login</h3>
+      <input id="username" placeholder="username" value="demoUser">
+      <input id="password" placeholder="password" value="123456" type="password">
+      <button onclick="registerUser()">Register</button>
+      <button onclick="loginUser()">Login</button>
+      <pre id="resAuth"></pre>
+    </div>
+
+    <!-- STEP 2: Get Products -->
+    <div class="step">
+      <h3>2. Get Products</h3>
+      <button onclick="getProducts()">Fetch Products</button>
+      <pre id="resProducts"></pre>
+    </div>
+
+    <!-- STEP 3: Add to Cart -->
+    <div class="step">
+      <h3>3. Add to Cart</h3>
+      <input id="prodId" placeholder="Product ID" value="1">
+      <input id="qty" placeholder="Quantity" value="1">
+      <button onclick="addCart()">Add</button>
+      <pre id="resCart"></pre>
+    </div>
+
+    <!-- STEP 4: Checkout -->
+    <div class="step">
+      <h3>4. Checkout</h3>
+      <button onclick="checkout()">Checkout Now</button>
+      <pre id="resCheckout"></pre>
+    </div>
+
+    <!-- STEP 5: Payment -->
+    <div class="step">
+      <h3>5. Payment</h3>
+      <small>Stripe test mode — use 4242 4242 4242 4242</small>
+      <form id="payment-form">
+        <div id="card-element" style="margin-bottom:10px;border:1px solid #ccc;padding:10px;border-radius:8px;"></div>
+        <button id="submit" type="submit">Bayar Sekarang</button>
+      </form>
+      <p id="message"></p>
+    </div>
+  </div>
+</section>
+
+    <div class="grid" style="margin-top:48px;" >
       <!-- Tech Stack -->
-      <section class="card">
+      <section class="card" id="tech" >
         <h2>Tech Stack & Vendors</h2>
         <p class="small">All technologies used are production-grade and battle-tested.</p>
         <div class="logo-grid" style="margin-top:12px">
@@ -283,7 +651,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
       </section>
 
       <!-- Modules & Capabilities -->
-      <section class="card">
+      <section class="card" id="modules" >
         <h2> Capabilities</h2>
         <ul>
           <li><b>Authentication</b> (Register/Login) & <b>JWT Authorization</b></li>
@@ -307,7 +675,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
     </div>
 
     <!-- ERD -->
-   <section class="card" style="margin-top:12px">
+   <section class="card" style="margin-top:48px;" id="erd">
   <h2> Entity Relationship Diagram (ERD)</h2>
   <p class="small">Database schema visualization generated from PostgreSQL (Neon).</p>
   <div class="erd" style="background:#0b1220;border-radius:12px;padding:12px">
@@ -317,7 +685,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
 
 
     <!-- Folder Structure -->
-    <section class="card" style="margin-top:12px">
+    <section class="card" style="margin-top:48px;" id="folder">
       <h2>Folder Structure</h2>
      <pre><code>flowcommerce/
 ├─ dist/
@@ -369,7 +737,7 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
     </section>
 
     <!-- ENV -->
-    <section class="card" style="margin-top:12px">
+    <section class="card" style="margin-top:48px;" id="env">
       <h2>Environment Variables</h2>
       <button class="button copy" onclick="copyEnv()">Copy</button>
       <pre id="env"><code>DATABASE_URL=postgres://user:pass@neon.host/db
@@ -388,7 +756,7 @@ RENDER_EXTERNAL_URL=${baseUrl}</code></pre>
     </section>
 
     <!-- Endpoints -->
-    <section class="card" style="margin-top:16px">
+    <section class="card" style="margin-top:48px;" id="endpoints">
       <h2>Useful Links & Endpoints</h2>
       <ul>
         <li>Base URL: <span class="kbd">${baseUrl}</span></li>
@@ -402,87 +770,41 @@ RENDER_EXTERNAL_URL=${baseUrl}</code></pre>
         <li>Orders: <span class="kbd">GET /orders/me</span>, <span class="kbd">POST /orders/checkout</span></li>
       </ul>
     </section>
-<div class="container">
-  <h1>FlowCommerce</h1>
-  <p>Modern e-commerce backend built with NestJS, TypeORM, PostgreSQL, Stripe (simulation), and JWT authentication.</p>
-  <a href="/api/docs" target="_blank">📘 Open Swagger Docs</a>
 
-  <div class="apitester">
-    <h2>Mini API Flow Tester</h2>
-    <small>Simulate the end-to-end API workflow directly in your browser.</small>
 
-    <div class="step">
-      <h3>1. Register / Login</h3>
-      <input id="username" placeholder="username" value="demoUser">
-      <input id="password" placeholder="password" value="123456" type="password">
-      <button onclick="registerUser()">Register</button>
-      <button onclick="loginUser()">Login</button>
-      <pre id="resAuth"></pre>
-    </div>
-
-    <div class="step">
-      <h3>2. Get Products</h3>
-      <button onclick="getProducts()">Fetch Products</button>
-      <pre id="resProducts"></pre>
-    </div>
-
-    <div class="step">
-      <h3>3. Add to Cart</h3>
-      <input id="prodId" placeholder="Product ID" value="1">
-      <input id="qty" placeholder="Quantity" value="1">
-      <button onclick="addCart()">Add</button>
-      <pre id="resCart"></pre>
-    </div>
-
-    <div class="step">
-      <h3>4. Checkout</h3>
-      <button onclick="checkout()">Checkout Now</button>
-      <pre id="resCheckout"></pre>
-    </div>
-
-  <div class="step">
-  <h3>5. Payment</h3>
-  <small>Simulate payment after checkout (pending only)</small>
-  <input id="cardNumber" placeholder="Card Number (e.g. 4242 4242 4242 4242)" maxlength="19">
-  <input id="expMonth" placeholder="MM" maxlength="2" style="width:60px">
-  <input id="expYear" placeholder="YY" maxlength="2" style="width:60px">
-  <input id="cvc" placeholder="CVC" maxlength="3" style="width:80px">
-  <input id="cardHolder" placeholder="Card Holder Name">
-  <button onclick="submitPayment()">Pay Now</button>
-  <pre id="resPayment"></pre>
-</div>
-
-  </div>
-</div>
-
+<!-- Stripe JS -->
 <script src="https://js.stripe.com/v3/"></script>
+
 <script>
   const base = window.location.origin;
   let token = '';
-  let paymentIntentId = '';
+  let clientSecret = null;
+  let checkoutStatus = 'idle';
+  let stripe, card;
 
-  function show(id, data){
+  function show(id, data) {
     document.getElementById(id).textContent = JSON.stringify(data, null, 2);
   }
 
-  async function registerUser(){
+  // --- AUTH ---
+  async function registerUser() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const res = await fetch(base + '/auth/register', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
     const data = await res.json();
     show('resAuth', data);
   }
 
-  async function loginUser(){
+  async function loginUser() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const res = await fetch(base + '/auth/login', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
     const data = await res.json();
@@ -490,7 +812,8 @@ RENDER_EXTERNAL_URL=${baseUrl}</code></pre>
     show('resAuth', data);
   }
 
-  async function getProducts(){
+  // --- PRODUCTS ---
+  async function getProducts() {
     const res = await fetch(base + '/products', {
       headers: token ? { 'Authorization': 'Bearer ' + token } : {}
     });
@@ -501,13 +824,14 @@ RENDER_EXTERNAL_URL=${baseUrl}</code></pre>
     }
   }
 
-  async function addCart(){
+  // --- CART ---
+  async function addCart() {
     const id = Number(document.getElementById('prodId').value);
     const qty = Number(document.getElementById('qty').value || 1);
     const res = await fetch(base + '/carts', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       },
       body: JSON.stringify({ productId: id, quantity: qty })
@@ -516,87 +840,66 @@ RENDER_EXTERNAL_URL=${baseUrl}</code></pre>
     show('resCart', data);
   }
 
- let checkoutStatus = 'idle';
+  // --- CHECKOUT ---
+  async function checkout() {
+    const res = await fetch(base + '/orders/checkout', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const data = await res.json();
+    show('resCheckout', data);
 
-async function checkout() {
-  const res = await fetch(base + '/orders/checkout', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + token }
-  });
-  const data = await res.json();
-  show('resCheckout', data);
-  paymentIntentId = data.payment_intent_id || data.paymentIntentId || '';
-  checkoutStatus = data.status || 'pending';
-  alert('Checkout created! Status: ' + checkoutStatus.toUpperCase());
-}
-
-async function submitPayment() {
-  if (checkoutStatus !== 'pending') {
-    alert('⚠️ Please checkout first. Payment is only available when status is pending.');
-    return;
-  }
-
-  const cardNumber = document.getElementById('cardNumber').value.trim();
-  const expMonth = document.getElementById('expMonth').value.trim();
-  const expYear = document.getElementById('expYear').value.trim();
-  const cvc = document.getElementById('cvc').value.trim();
-  const cardHolder = document.getElementById('cardHolder').value.trim();
-
-  if (!cardNumber || !expMonth || !expYear || !cvc || !cardHolder) {
-    alert('Please fill in all payment fields.');
-    return;
-  }
-
-  // Simulasi validasi kartu
-  if (cardNumber.replace(/\s+/g, '') !== '4242424242424242') {
-    alert('❌ Invalid card number for simulation. Use 4242 4242 4242 4242.');
-    return;
-  }
-
-  // Simulasi "Stripe" webhook call
-  const paymentData = {
-    type: 'payment_intent.succeeded',
-    data: {
-      object: {
-        id: paymentIntentId || 'pi_simulated_123',
-        amount_received: 100000, // contoh nominal
-        currency: 'idr',
-        payment_method: {
-          card: {
-            brand: 'visa',
-            last4: cardNumber.slice(-4),
-            exp_month: expMonth,
-            exp_year: expYear
-          },
-          billing_details: {
-            name: cardHolder
-          }
-        },
-        status: 'succeeded'
-      }
+    if (data.clientSecret) {
+      clientSecret = data.clientSecret;
+      initStripe(); // otomatis aktifin payment form
+      checkoutStatus = 'pending';
+      alert('✅ Checkout successful! Ready to pay.');
+    } else {
+      alert('⚠️ Checkout failed or missing clientSecret.');
     }
-  };
+  }
 
-  const res = await fetch(base + '/payment/webhook', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(paymentData)
+function initStripe() {
+  stripe = Stripe("pk_test_51SMkGwGRGClTIbUYdaUqWkLOvLMH09iJhUXKFEpXB15w4o13WH4JE1D5rfMYeR85awFMZft8lhGOGS2X2To1wNHb00E4y2xAH7");
+  const elements = stripe.elements();
+  card = elements.create("card");
+  card.mount("#card-element");
+
+  const form = document.getElementById("payment-form");
+  const msg = document.getElementById("message");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!clientSecret) {
+      msg.textContent = "⚠️ Please complete the checkout process first.";
+      return;
+    }
+
+    msg.textContent = "⏳ Processing your payment...";
+
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: { card }
+    });
+
+    if (error) {
+      msg.textContent = "❌ Payment failed: " + error.message;
+    } else if (paymentIntent.status === "succeeded") {
+      msg.textContent = "✅ Payment successful!";
+      checkoutStatus = "paid";
+    } else {
+      msg.textContent = "⚠️ Unknown payment status: " + paymentIntent.status;
+    }
   });
-  const data = await res.json();
-  show('resPayment', data);
-  checkoutStatus = 'paid';
-  alert('✅ Payment simulated successfully!');
-  const stripe = Stripe('pk_test_...'); // pakai publishable key
-
 }
-
 
 </script>
+
 </body>
 </html>`);
   });
 
-  // ✅ Jalankan server
+  // Start Server
   const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');
 
@@ -604,7 +907,7 @@ async function submitPayment() {
   console.log(`📘 Swagger: ${baseUrlFromEnv()}/api/docs`);
 }
 
-// ✅ Fix fungsi yang belum selesai
+// Get base URL from environment or default to localhost
 function baseUrlFromEnv() {
   return process.env.RENDER_EXTERNAL_URL || `http://localhost:${process.env.PORT || 3000}`;
 }

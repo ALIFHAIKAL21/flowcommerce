@@ -21,7 +21,7 @@ export class CartsService {
     private usersRepo: Repository<Users>,
   ) {}
 
-  // 🔍 Get All Carts (Admin Only)
+  // Get All Carts (Admin Only)
   async findAll(): Promise<Carts[]> {
     return this.cartsRepo.find({
       relations: ['user', 'product'],
@@ -29,7 +29,7 @@ export class CartsService {
     });
   }
 
-  // 🔍 Get Cart by ID
+  //  Get Cart by ID
   async findOne(id_cart: number): Promise<Carts | null> {
     return this.cartsRepo.findOne({
       where: { id_cart },
@@ -37,7 +37,7 @@ export class CartsService {
     });
   }
 
-  // ➕ Create New Cart (userId otomatis dari JWT)
+  // CREATE Cart
   async create(userId: number, dto: CreateCartDto): Promise<Carts> {
     const user = await this.usersRepo.findOneBy({ id_user: userId });
     if (!user) throw new NotFoundException(`User with id ${userId} not found`);
@@ -54,7 +54,7 @@ export class CartsService {
       throw new BadRequestException(`Not enough stock for ${product.name}`);
     }
 
-    // 🛒 Cek apakah produk sudah ada di cart user
+    // Check if cart for this user and product already exists
     const existingCart = await this.cartsRepo.findOne({
       where: {
         user: { id_user: userId },
@@ -69,7 +69,7 @@ export class CartsService {
       return this.cartsRepo.save(existingCart);
     }
 
-    // 🆕 Buat cart baru
+    // Create new cart entry
     const cart = this.cartsRepo.create({
       user,
       product,
@@ -80,7 +80,7 @@ export class CartsService {
     return this.cartsRepo.save(cart);
   }
 
-  // ✏️ Update Cart
+  //  Update Cart
   async update(id_cart: number, dto: UpdateCartDto): Promise<Carts | null> {
     const cart = await this.cartsRepo.findOne({
       where: { id_cart },
@@ -100,7 +100,7 @@ export class CartsService {
     return this.findOne(id_cart);
   }
 
-  // ❌ Delete Cart by ID
+  // Delete Cart by ID
   async remove(id_cart: number): Promise<void> {
     const result = await this.cartsRepo.delete(id_cart);
     if (result.affected === 0) {
@@ -108,7 +108,7 @@ export class CartsService {
     }
   }
 
-  // 🧹 Clear Cart for Logged-in User
+  // Clear Cart for Logged-in User
   async clearUserCart(userId: number): Promise<void> {
   await this.cartsRepo
     .createQueryBuilder()

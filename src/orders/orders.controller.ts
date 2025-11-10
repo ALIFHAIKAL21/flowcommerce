@@ -67,4 +67,5 @@ export class OrdersController {
   remove(@Param('id_order') id_order: number) {
     return this.ordersService.remove(id_order);
   }
+  
 }
