@@ -18,10 +18,11 @@ export class PaymentController {
   }
 
   // Stripe Webhook handler
+// payment.controller.ts (potongan)
 @Post('webhook')
 @HttpCode(200)
 async handleWebhook(@Req() req: any, @Headers('stripe-signature') signature: string) {
-  // Kalo simulasi dari UI (tanpa signature)
+  // Kalau simulasi dari UI (tanpa signature)
   if (!signature) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const paymentIntentId = body?.data?.object?.id;
@@ -43,23 +44,39 @@ async handleWebhook(@Req() req: any, @Headers('stripe-signature') signature: str
   // --- real Stripe webhook ---
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
   let event;
+
   try {
-    event = this.stripe.webhooks.constructEvent(req.body, signature, endpointSecret);
+    // Pastikan kita kirim Buffer ke constructEvent.
+    // express.raw({type:'application/json'}) akan membuat req.body = Buffer
+    const rawBody = Buffer.isBuffer(req.body) ? req.body : Buffer.from(typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
+    // Optional: log info kecil
+    console.log('Webhook raw body length:', rawBody.length);
+    event = this.stripe.webhooks.constructEvent(rawBody, signature, endpointSecret);
   } catch (err) {
     console.error('❌ Webhook signature failed:', (err as Error).message);
+    // kembalikan 400 tanpa throw ke client jika mau; tapi BadRequestException juga oke
     throw new BadRequestException(`Webhook Error: ${(err as Error).message}`);
   }
 
+  console.log('✅ Received stripe event:', event.type);
+
   if (event.type === 'payment_intent.succeeded') {
     const paymentIntent = event.data.object as Stripe.PaymentIntent;
+    console.log('🔎 PaymentIntent id:', paymentIntent.id, 'amount:', paymentIntent.amount);
+
     const order = await this.ordersRepo.findOne({
-      where: { payment_intent_id: paymentIntent.id },
+      where: { payment_intent_id: paymentIntent.id }, // pastikan properti ini sesuai entity
     });
-    if (order) {
+
+    if (!order) {
+      console.warn('⚠️ No order found for payment_intent_id:', paymentIntent.id);
+    } else {
       order.status = 'paid';
       await this.ordersRepo.save(order);
       console.log(`✅ REAL PAYMENT: Order ${order.id_order} marked as PAID`);
     }
+  } else {
+    console.log('Ignoring event type', event.type);
   }
 
   return { received: true };

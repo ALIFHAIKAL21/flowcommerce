@@ -9,23 +9,21 @@ import { json, raw } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    // important: disable default bodyParser so we control parsers ourselves
     bodyParser: false,
   });
 
   const expressApp = app.getHttpAdapter().getInstance();
 
-  // Serve static files
-  app.useStaticAssets(join(process.cwd(), 'public'));
-
-  // 1) Apply raw() ONLY for Stripe webhook route BEFORE json parser
-  // This ensures req.body for /payment/webhook is a Buffer (raw) for Stripe verification
+  // ✅ Tempatkan handler RAW sebelum json() agar /payment/webhook tidak ikut di-parse
   expressApp.use('/payment/webhook', raw({ type: 'application/json' }));
 
-  // 2) Apply JSON parser for all other routes
+  // ✅ Gunakan JSON parser global untuk route lain
   expressApp.use(json());
 
-  // Global Validation (Nest)
+  // Static
+  app.useStaticAssets(join(process.cwd(), 'public'));
+
+  // Validation
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -34,6 +32,7 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
+
   // Swagger
   setupSwagger(app);
 
@@ -51,8 +50,7 @@ async function bootstrap() {
   // Basic Route
   expressApp.get('/', (_req, res) => {
     const baseUrl = process.env.RENDER_EXTERNAL_URL || 'http://localhost:3000';
-    res.type('html').send(`
-<!DOCTYPE html>
+    res.type('html').send(`<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -595,19 +593,20 @@ async function submitPayment() {
 
 </script>
 </body>
-</html>
-    `);
+</html>`);
+  });
 
-  }); const port = process.env.PORT || 3000;
+  // ✅ Jalankan server
+  const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');
 
   console.log(`🚀 Server running at ${baseUrlFromEnv()}`);
   console.log(`📘 Swagger: ${baseUrlFromEnv()}/api/docs`);
 }
 
+// ✅ Fix fungsi yang belum selesai
 function baseUrlFromEnv() {
-  return process.env.RENDER_EXTERNAL_URL || 'http://localhost:3000';
+  return process.env.RENDER_EXTERNAL_URL || `http://localhost:${process.env.PORT || 3000}`;
 }
 
 bootstrap();
-
