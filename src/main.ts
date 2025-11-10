@@ -5,22 +5,27 @@ import * as express from 'express';
 import { setupSwagger } from './swagger';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { json, raw } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    // important: disable default bodyParser so we control parsers ourselves
     bodyParser: false,
   });
 
   const expressApp = app.getHttpAdapter().getInstance();
 
-  // Serve static files from /public
+  // Serve static files
   app.useStaticAssets(join(process.cwd(), 'public'));
 
-  // Stripe Webhook
-  expressApp.use('/payment/webhook', express.raw({ type: 'application/json' }));
-  expressApp.use(express.json());
+  // 1) Apply raw() ONLY for Stripe webhook route BEFORE json parser
+  // This ensures req.body for /payment/webhook is a Buffer (raw) for Stripe verification
+  expressApp.use('/payment/webhook', raw({ type: 'application/json' }));
 
-  // Global Validation
+  // 2) Apply JSON parser for all other routes
+  expressApp.use(json());
+
+  // Global Validation (Nest)
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -29,7 +34,6 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
-
   // Swagger
   setupSwagger(app);
 
@@ -56,6 +60,7 @@ async function bootstrap() {
 <title>FlowCommerce — Overview</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+
 :root{
   --primary:#1AA3A1; --primary-2:#0f766e;
   --ink:#0b1220; --muted:#6b7280; --fg:#111827; --bg:#0b1220; --card:#0f1629;
@@ -135,6 +140,96 @@ a{color:#7dd3fc; text-decoration:none} a:hover{text-decoration:underline}
 }
 .status-dot{width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:6px}
 .ok{background:#10b981}.warn{background:#f59e0b}.bad{background:#ef4444}
+
+.apitester {
+  background: var(--card);
+  border: 1px solid #ffffff12;
+  border-radius: 20px;
+  padding: 28px;
+  margin-top: 22px;
+  box-shadow: var(--shadow);
+}
+
+.apitester h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #e8faf9;
+  margin-bottom: 12px;
+}
+
+.apitester h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #a5f3fc;
+  margin-top: 22px;
+  margin-bottom: 8px;
+}
+
+.apitester input {
+  background: #0b1322;
+  border: 1px solid #ffffff1a;
+  border-radius: 10px;
+  color: #e5e7eb;
+  padding: 8px 10px;
+  font-size: 14px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.apitester input:focus {
+  border-color: #1AA3A1;
+  box-shadow: 0 0 0 2px #1aa3a133;
+}
+
+.apitester button {
+  background: var(--grad);
+  color: #062b29;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all .2s ease;
+  box-shadow: 0 4px 12px rgba(23,178,176,.3);
+}
+.apitester button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(23,178,176,.4);
+}
+
+.apitester pre {
+  background: #0b1322;
+  border: 1px solid #ffffff12;
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #cbd5e1;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 13px;
+  max-height: 240px;
+  overflow-y: auto;
+  margin-top: 8px;
+}
+
+.apitester hr {
+  height: 1px;
+  background: #ffffff18;
+  border: none;
+  margin: 18px 0;
+}
+
+.apitester small {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+/* Subtle divider */
+.apitester .step {
+  border-left: 3px solid #1AA3A1;
+  padding-left: 12px;
+  margin-bottom: 12px;
+}
+
 </style>
 </head>
 <body>
@@ -309,17 +404,195 @@ RENDER_EXTERNAL_URL=${baseUrl}</code></pre>
         <li>Orders: <span class="kbd">GET /orders/me</span>, <span class="kbd">POST /orders/checkout</span></li>
       </ul>
     </section>
+<div class="container">
+  <h1>FlowCommerce</h1>
+  <p>Modern e-commerce backend built with NestJS, TypeORM, PostgreSQL, Stripe (simulation), and JWT authentication.</p>
+  <a href="/api/docs" target="_blank">📘 Open Swagger Docs</a>
 
-    <p class="footer">© 2025 FlowCommerce · built by Alif Haikal From Flowdev Teams</p>
+  <div class="apitester">
+    <h2>Mini API Flow Tester</h2>
+    <small>Simulate the end-to-end API workflow directly in your browser.</small>
+
+    <div class="step">
+      <h3>1. Register / Login</h3>
+      <input id="username" placeholder="username" value="demoUser">
+      <input id="password" placeholder="password" value="123456" type="password">
+      <button onclick="registerUser()">Register</button>
+      <button onclick="loginUser()">Login</button>
+      <pre id="resAuth"></pre>
+    </div>
+
+    <div class="step">
+      <h3>2. Get Products</h3>
+      <button onclick="getProducts()">Fetch Products</button>
+      <pre id="resProducts"></pre>
+    </div>
+
+    <div class="step">
+      <h3>3. Add to Cart</h3>
+      <input id="prodId" placeholder="Product ID" value="1">
+      <input id="qty" placeholder="Quantity" value="1">
+      <button onclick="addCart()">Add</button>
+      <pre id="resCart"></pre>
+    </div>
+
+    <div class="step">
+      <h3>4. Checkout</h3>
+      <button onclick="checkout()">Checkout Now</button>
+      <pre id="resCheckout"></pre>
+    </div>
+
+  <div class="step">
+  <h3>5. Payment</h3>
+  <small>Simulate payment after checkout (pending only)</small>
+  <input id="cardNumber" placeholder="Card Number (e.g. 4242 4242 4242 4242)" maxlength="19">
+  <input id="expMonth" placeholder="MM" maxlength="2" style="width:60px">
+  <input id="expYear" placeholder="YY" maxlength="2" style="width:60px">
+  <input id="cvc" placeholder="CVC" maxlength="3" style="width:80px">
+  <input id="cardHolder" placeholder="Card Holder Name">
+  <button onclick="submitPayment()">Pay Now</button>
+  <pre id="resPayment"></pre>
+</div>
+
   </div>
+</div>
 
+<script src="https://js.stripe.com/v3/"></script>
 <script>
-function copyEnv(){
-  const t = document.getElementById('env').innerText;
-  navigator.clipboard.writeText(t).then(()=>{
-    alert('Environment template copied!');
+  const base = window.location.origin;
+  let token = '';
+  let paymentIntentId = '';
+
+  function show(id, data){
+    document.getElementById(id).textContent = JSON.stringify(data, null, 2);
+  }
+
+  async function registerUser(){
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const res = await fetch(base + '/auth/register', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    show('resAuth', data);
+  }
+
+  async function loginUser(){
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const res = await fetch(base + '/auth/login', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    token = data.access_token || '';
+    show('resAuth', data);
+  }
+
+  async function getProducts(){
+    const res = await fetch(base + '/products', {
+      headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+    });
+    const data = await res.json();
+    show('resProducts', data);
+    if (Array.isArray(data) && data.length > 0) {
+      document.getElementById('prodId').value = data[0].id_product || data[0].id || 1;
+    }
+  }
+
+  async function addCart(){
+    const id = Number(document.getElementById('prodId').value);
+    const qty = Number(document.getElementById('qty').value || 1);
+    const res = await fetch(base + '/carts', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({ productId: id, quantity: qty })
+    });
+    const data = await res.json();
+    show('resCart', data);
+  }
+
+ let checkoutStatus = 'idle';
+
+async function checkout() {
+  const res = await fetch(base + '/orders/checkout', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token }
   });
+  const data = await res.json();
+  show('resCheckout', data);
+  paymentIntentId = data.payment_intent_id || data.paymentIntentId || '';
+  checkoutStatus = data.status || 'pending';
+  alert('Checkout created! Status: ' + checkoutStatus.toUpperCase());
 }
+
+async function submitPayment() {
+  if (checkoutStatus !== 'pending') {
+    alert('⚠️ Please checkout first. Payment is only available when status is pending.');
+    return;
+  }
+
+  const cardNumber = document.getElementById('cardNumber').value.trim();
+  const expMonth = document.getElementById('expMonth').value.trim();
+  const expYear = document.getElementById('expYear').value.trim();
+  const cvc = document.getElementById('cvc').value.trim();
+  const cardHolder = document.getElementById('cardHolder').value.trim();
+
+  if (!cardNumber || !expMonth || !expYear || !cvc || !cardHolder) {
+    alert('Please fill in all payment fields.');
+    return;
+  }
+
+  // Simulasi validasi kartu
+  if (cardNumber.replace(/\s+/g, '') !== '4242424242424242') {
+    alert('❌ Invalid card number for simulation. Use 4242 4242 4242 4242.');
+    return;
+  }
+
+  // Simulasi "Stripe" webhook call
+  const paymentData = {
+    type: 'payment_intent.succeeded',
+    data: {
+      object: {
+        id: paymentIntentId || 'pi_simulated_123',
+        amount_received: 100000, // contoh nominal
+        currency: 'idr',
+        payment_method: {
+          card: {
+            brand: 'visa',
+            last4: cardNumber.slice(-4),
+            exp_month: expMonth,
+            exp_year: expYear
+          },
+          billing_details: {
+            name: cardHolder
+          }
+        },
+        status: 'succeeded'
+      }
+    }
+  };
+
+  const res = await fetch(base + '/payment/webhook', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(paymentData)
+  });
+  const data = await res.json();
+  show('resPayment', data);
+  checkoutStatus = 'paid';
+  alert('✅ Payment simulated successfully!');
+  const stripe = Stripe('pk_test_...'); // pakai publishable key
+
+}
+
+
 </script>
 </body>
 </html>
@@ -337,3 +610,4 @@ function baseUrlFromEnv() {
 }
 
 bootstrap();
+

@@ -1,4 +1,3 @@
-
 import {
   Controller,
   Get,
@@ -18,14 +17,13 @@ import { UpdateOrderStatusDto } from './orders.dto';
 import type { Request } from 'express';
 
 interface AuthRequest extends Request {
-  user: { userId: number; role: string };
+  user: { id_user: number; role: string }; // ✅ ubah dari userId → id_user
 }
 
 @Controller('orders')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) { }
-
+  constructor(private readonly ordersService: OrdersService) {}
 
   // Get All Orders
   @Get()
@@ -37,10 +35,10 @@ export class OrdersController {
   // Get Orders of Logged-in User
   @Get('me')
   findMine(@Req() req: AuthRequest) {
-    return this.ordersService.findMine(req.user.userId);
+    return this.ordersService.findMine(req.user.id_user); // ✅ fix
   }
 
-// Get Order by ID
+  // Get Order by ID
   @Get(':id_order')
   findOne(@Param('id_order') id_order: number) {
     return this.ordersService.findOne(id_order);
@@ -50,10 +48,10 @@ export class OrdersController {
   @Post('checkout')
   @Roles('customer', 'admin')
   checkout(@Req() req: AuthRequest) {
-    return this.ordersService.checkout(req.user.userId);
+    return this.ordersService.checkout(req.user.id_user); // ✅ fix
   }
 
-// Update Order Status
+  // Update Order Status
   @Put(':id_order/status')
   @Roles('admin')
   updateStatus(
@@ -63,8 +61,7 @@ export class OrdersController {
     return this.ordersService.updateStatus(id_order, dto);
   }
 
-
-// Delete Order
+  // Delete Order
   @Delete(':id_order')
   @Roles('admin')
   remove(@Param('id_order') id_order: number) {
