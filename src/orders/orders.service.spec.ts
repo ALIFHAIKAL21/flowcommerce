@@ -35,8 +35,10 @@ describe('OrdersService', () => {
         save: jest.fn(),
         findOne: jest.fn(),
         delete: jest.fn(),
+        remove: jest.fn(),
       },
     } as unknown as QueryRunner;
+
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -77,7 +79,7 @@ describe('OrdersService', () => {
     dataSource = module.get(DataSource);
   });
 
-   // cleanup mocks
+  // cleanup mocks
   afterEach(() => jest.clearAllMocks());
 
   it('should be defined', () => {

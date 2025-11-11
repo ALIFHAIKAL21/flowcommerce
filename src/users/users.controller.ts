@@ -1,9 +1,13 @@
 import {
-  Controller, Get, Post, Put, Delete, Body, Param, NotFoundException,
+  Controller, Get, Post, Put, Delete, Body, Param, NotFoundException, UseGuards
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Users } from './users.entity';
 import { CreateUserDto, UpdateUserDto } from './users.dto';
+import { Roles } from '../auth/roles.decorator';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+
 
 function stripPassword(u: Users): Omit<Users, 'password'> {
   const { password, ...safe } = u as any;
@@ -11,11 +15,13 @@ function stripPassword(u: Users): Omit<Users, 'password'> {
 }
 
 @Controller('users')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   // Get All Users
   @Get()
+  @Roles('admin')
   async findAll(): Promise<Array<Omit<Users, 'password'>>> {
     const list = await this.usersService.findAll();
     return list.map(stripPassword);
@@ -23,6 +29,7 @@ export class UsersController {
 
   // Get User by ID
   @Get(':id_user')
+  @Roles('admin')
   async findOne(@Param('id_user') id_user: number): Promise<Omit<Users, 'password'>> {
     const user = await this.usersService.findOne(id_user);
     if (!user) throw new NotFoundException(`User with id ${id_user} not found`);

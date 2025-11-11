@@ -1,0 +1,1590 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>FlowCommerce — Overview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: '#f0fdfa',
+                100: '#ccfbf1',
+                200: '#99f6e4',
+                300: '#5eead4',
+                400: '#2dd4bf',
+                500: '#14b8a6',
+                600: '#0d9488',
+                700: '#0f766e',
+                800: '#115e59',
+                900: '#134e4a',
+              },
+              dark: {
+                50: '#f8fafc',
+                100: '#f1f5f9',
+                200: '#e2e8f0',
+                300: '#cbd5e1',
+                400: '#94a3b8',
+                500: '#64748b',
+                600: '#475569',
+                700: '#334155',
+                800: '#1e293b',
+                900: '#0f172a',
+                950: '#020617',
+              },
+            },
+            fontFamily: {
+              inter: ['Inter', 'system-ui', 'sans-serif'],
+            },
+            backgroundImage: {
+              'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+              'gradient-emerald':
+                'linear-gradient(135deg, #17b2b0 0%, #1AA3A1 40%, #6ee7b7 100%)',
+              'gradient-dark':
+                'radial-gradient(1000px 600px at 20% -10%, #16a34a22 0%, transparent 60%), radial-gradient(900px 500px at 120% 40%, #06b6d422 0%, transparent 60%)',
+            },
+            boxShadow: {
+              glass: '0 10px 40px rgba(0, 0, 0, 0.35)',
+              card: '0 4px 20px rgba(0, 0, 0, 0.25)',
+            },
+            borderRadius: {
+              xl: '16px',
+              '2xl': '20px',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #0f172a;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #1e293b;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #334155;
+      }
+
+      /* Card element styling */
+      #card-element {
+        color: #fff !important;
+        background-color: #1e293b !important;
+        border: 1px solid #334155;
+        padding: 12px;
+        border-radius: 8px;
+      }
+
+      #card-element input,
+      #card-element * {
+        color: #fff !important;
+      }
+
+      #card-element::placeholder,
+      #card-element input::placeholder {
+        color: #94a3b8 !important;
+      }
+
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+  </head>
+  <body class="bg-dark-950 text-gray-200 font-inter">
+    <!-- Navigation -->
+    <nav
+      class="fixed top-0 left-0 right-0 h-16 bg-dark-900/90 backdrop-blur-md border-b border-dark-800 shadow-lg z-50 flex items-center justify-between px-4 md:px-8"
+    >
+      <div class="flex items-center h-full">
+        <h1
+          class="text-xl md:text-2xl font-bold bg-gradient-emerald bg-clip-text text-transparent"
+        >
+          FlowCommerce
+        </h1>
+      </div>
+
+      <ul class="hidden md:flex items-center space-x-6 h-full">
+        <li class="h-full flex items-center">
+          <a
+            href="#overview"
+            class="h-full flex items-center px-3 font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+            >Overview</a
+          >
+        </li>
+        <li class="h-full flex items-center">
+          <a
+            href="#apitester"
+            class="h-full flex items-center px-3 font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+            >API Tester</a
+          >
+        </li>
+        <li class="h-full flex items-center">
+          <a
+            href="#tech"
+            class="h-full flex items-center px-3 font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+            >Tech Stack</a
+          >
+        </li>
+        <li class="h-full flex items-center">
+          <a
+            href="#erd"
+            class="h-full flex items-center px-3 font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+            >ERD</a
+          >
+        </li>
+        <li class="h-full flex items-center">
+          <a
+            href="#folder"
+            class="h-full flex items-center px-3 font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+            >Folder</a
+          >
+        </li>
+        <li class="h-full flex items-center">
+          <a
+            href="#env"
+            class="h-full flex items-center px-3 font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+            >ENV</a
+          >
+        </li>
+        <li class="h-full flex items-center">
+          <a
+            href="#endpoints"
+            class="h-full flex items-center px-3 font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+            >Endpoints</a
+          >
+        </li>
+      </ul>
+
+      <!-- Mobile menu button -->
+      <button
+        id="mobile-menu-button"
+        class="md:hidden text-gray-300 hover:text-emerald-400"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div
+      id="mobile-menu"
+      class="md:hidden fixed top-16 left-0 right-0 bg-dark-900/95 backdrop-blur-md border-b border-dark-800 shadow-lg z-40 hidden"
+    >
+      <div class="flex flex-col py-4 px-4 space-y-4">
+        <a
+          href="#overview"
+          class="font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+          >Overview</a
+        >
+        <a
+          href="#apitester"
+          class="font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+          >API Tester</a
+        >
+        <a
+          href="#tech"
+          class="font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+          >Tech Stack</a
+        >
+        <a
+          href="#erd"
+          class="font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+          >ERD</a
+        >
+        <a
+          href="#folder"
+          class="font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+          >Folder</a
+        >
+        <a
+          href="#env"
+          class="font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+          >ENV</a
+        >
+        <a
+          href="#endpoints"
+          class="font-semibold text-gray-300 hover:text-emerald-400 transition-colors duration-200"
+          >Endpoints</a
+        >
+      </div>
+    </div>
+
+    <div class="pt-16">
+      <!-- Hero Section -->
+      <section id="overview" class="py-16 px-4 md:px-8 bg-gradient-dark">
+        <div class="max-w-6xl mx-auto text-center">
+          <span
+            class="inline-block bg-emerald-900/30 text-emerald-400 font-bold text-xs uppercase tracking-wider rounded-lg px-4 py-2 border border-emerald-800/50 mb-6"
+          >
+            Project Overview
+          </span>
+
+          <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+            FlowCommerce
+          </h1>
+
+          <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-10">
+            A self-initiated
+            <span class="font-bold">e-commerce backend platform</span> built
+            with
+            <code
+              class="bg-dark-800 text-emerald-400 px-2 py-1 rounded-md text-sm"
+              >NestJS</code
+            >
+            and
+            <code
+              class="bg-dark-800 text-emerald-400 px-2 py-1 rounded-md text-sm"
+              >PostgreSQL</code
+            >. It showcases a modern, scalable architecture with secure
+            <span class="font-bold">JWT authentication</span>,
+            <span class="font-bold">RBAC</span>, and
+            <span class="font-bold">Stripe</span> integration for payments.
+            Deployed through an automated
+            <span class="font-bold">GitHub To Render</span> CI/CD pipeline, this
+            project highlights clean backend design and production-ready
+            implementation.
+          </p>
+
+          <div
+            class="flex justify-center items-center space-x-8 md:space-x-12 mb-10"
+          >
+            <a
+              href="https://nestjs.com/"
+              class="transform hover:scale-110 transition-transform duration-300"
+            >
+              <img
+                src="https://nestjs.com/img/logo-small.svg"
+                alt="NestJS"
+                class="h-16 md:h-20"
+              />
+            </a>
+            <a
+              href="https://www.postgresql.org/"
+              class="transform hover:scale-110 transition-transform duration-300"
+            >
+              <img
+                src="https://www.postgresql.org/media/img/about/press/elephant.png"
+                alt="PostgreSQL"
+                class="h-16 md:h-20"
+              />
+            </a>
+            <a
+              href="https://stripe.com/"
+              class="transform hover:scale-110 transition-transform duration-300"
+            >
+              <img
+                src="https://cdn.worldvectorlogo.com/logos/stripe-4.svg"
+                alt="Stripe"
+                class="h-16 md:h-20"
+              />
+            </a>
+          </div>
+
+          <div
+            class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4"
+          >
+            <a
+              href="/api/docs"
+              target="_blank"
+              class="bg-gradient-emerald text-dark-900 font-bold py-3 px-6 rounded-xl hover:opacity-90 transition-opacity duration-300 shadow-lg"
+            >
+              Swagger API Docs
+            </a>
+            <a
+              href="https://github.com/ALIFHAIKAL21/flowcommerce"
+              target="_blank"
+              rel="noopener"
+              class="border border-gray-600 text-gray-300 font-bold py-3 px-6 rounded-xl hover:bg-dark-800 transition-colors duration-300"
+            >
+              GitHub (Repo)
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- API Tester Section -->
+      <section id="apitester" class="py-12 px-4 md:px-8 bg-dark-900">
+        <div class="max-w-6xl mx-auto">
+          <div
+            class="bg-dark-800 rounded-2xl p-6 md:p-8 shadow-card border border-dark-700"
+          >
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">
+              Mini API Customer Flow Tester
+            </h2>
+            <p class="text-gray-400 mb-6">
+              Simulate the end-to-end API workflow directly in your browser.
+            </p>
+
+            <!-- STEP 1: Register / Login -->
+            <div class="border-l-4 border-emerald-500 pl-4 mb-6">
+              <h3 class="text-lg font-bold text-emerald-400 mb-2">
+                1. Register / Login
+              </h3>
+              <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                <input
+                  id="username"
+                  placeholder="username"
+                  value="demoUser"
+                  class="bg-dark-700 border border-dark-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <input
+                  id="password"
+                  placeholder="password"
+                  value="123456"
+                  type="password"
+                  class="bg-dark-700 border border-dark-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <button
+                  onclick="registerUser()"
+                  class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300"
+                >
+                  Register
+                </button>
+                <button
+                  onclick="loginUser()"
+                  class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300"
+                >
+                  Login
+                </button>
+              </div>
+              <pre
+                id="resAuth"
+                class="bg-dark-900 border border-dark-700 rounded-lg p-4 text-sm text-gray-300 max-h-40 overflow-y-auto"
+              ></pre>
+            </div>
+
+            <!-- STEP 2: Get Products -->
+            <div class="border-l-4 border-emerald-500 pl-4 mb-6">
+              <h3 class="text-lg font-bold text-emerald-400 mb-2">
+                2. Get Products
+              </h3>
+              <button
+                onclick="getProducts()"
+                class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300 mb-4"
+              >
+                Fetch Products
+              </button>
+              <pre
+                id="resProducts"
+                class="bg-dark-900 border border-dark-700 rounded-lg p-4 text-sm text-gray-300 max-h-40 overflow-y-auto"
+              ></pre>
+            </div>
+
+            <!-- STEP 3: Add to Cart -->
+            <div class="border-l-4 border-emerald-500 pl-4 mb-6">
+              <h3 class="text-lg font-bold text-emerald-400 mb-2">
+                3. Add to Cart
+              </h3>
+              <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                <input
+                  id="prodId"
+                  placeholder="Product ID"
+                  value="1"
+                  class="bg-dark-700 border border-dark-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <input
+                  id="qty"
+                  placeholder="Quantity"
+                  value="1"
+                  class="bg-dark-700 border border-dark-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <button
+                  onclick="addCart()"
+                  class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300"
+                >
+                  Add
+                </button>
+              </div>
+              <pre
+                id="resCart"
+                class="bg-dark-900 border border-dark-700 rounded-lg p-4 text-sm text-gray-300 max-h-40 overflow-y-auto"
+              ></pre>
+            </div>
+
+            <!-- STEP 4: Checkout -->
+            <div class="border-l-4 border-emerald-500 pl-4 mb-6">
+              <h3 class="text-lg font-bold text-emerald-400 mb-2">
+                4. Checkout
+              </h3>
+              <button
+                onclick="checkout()"
+                class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300 mb-4"
+              >
+                Checkout Now
+              </button>
+              <pre
+                id="resCheckout"
+                class="bg-dark-900 border border-dark-700 rounded-lg p-4 text-sm text-gray-300 max-h-40 overflow-y-auto"
+              ></pre>
+            </div>
+
+            <!-- STEP 5: Payment -->
+            <div class="border-l-4 border-emerald-500 pl-4">
+              <h3 class="text-lg font-bold text-emerald-400 mb-2">
+                5. Payment
+              </h3>
+              <p class="text-gray-400 text-sm mb-4">
+                Stripe test mode — use 4242 4242 4242 4242
+              </p>
+              <form id="payment-form">
+                <div id="card-element" class="mb-4"></div>
+                <button
+                  id="submit"
+                  type="submit"
+                  class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300"
+                >
+                  Pay Now
+                </button>
+              </form>
+              <p id="message" class="mt-4"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Admin API Tester Section -->
+      <section id="adminApiTester" class="py-12 px-4 md:px-8 bg-dark-950">
+        <div class="max-w-6xl mx-auto">
+          <div
+            class="bg-dark-800 rounded-2xl p-6 md:p-8 shadow-card border border-dark-700"
+          >
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">
+              Mini API Admin Flow Tester
+            </h2>
+            <p class="text-gray-400 mb-6">
+              Test all admin-protected endpoints quickly.
+            </p>
+
+            <!-- STEP 1: Login as Admin -->
+            <div class="border-l-4 border-emerald-500 pl-4 mb-6">
+              <h3 class="text-lg font-bold text-emerald-400 mb-2">
+                1. Admin Login
+              </h3>
+              <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                <input
+                  id="adminUser"
+                  placeholder="username"
+                  value="admin"
+                  class="bg-dark-700 border border-dark-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <input
+                  id="adminPass"
+                  placeholder="password"
+                  value="123456"
+                  type="password"
+                  class="bg-dark-700 border border-dark-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <button
+                  onclick="loginAdmin()"
+                  class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300"
+                >
+                  Login
+                </button>
+              </div>
+              <pre
+                id="adminResAuth"
+                class="bg-dark-900 border border-dark-700 rounded-lg p-4 text-sm text-gray-300 max-h-40 overflow-y-auto"
+              ></pre>
+            </div>
+
+            <!-- STEP 2: Users -->
+            <div class="border-l-4 border-emerald-500 pl-4 mb-6">
+              <h3 class="text-lg font-bold text-emerald-400 mb-2">
+                2. Users (List All)
+              </h3>
+              <button
+                onclick="getAllUsers()"
+                class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300 mb-4"
+              >
+                Get All Users
+              </button>
+              <pre
+                id="adminResUsers"
+                class="bg-dark-900 border border-dark-700 rounded-lg p-4 text-sm text-gray-300 max-h-40 overflow-y-auto"
+              ></pre>
+            </div>
+
+            <!-- STEP 3: Categories -->
+            <div class="border-l-4 border-emerald-500 pl-4 mb-6">
+              <h3 class="text-lg font-bold text-emerald-400 mb-2">
+                3. Categories
+              </h3>
+              <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                <button
+                  onclick="getAllCategories()"
+                  class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300"
+                >
+                  List Categories
+                </button>
+                <input
+                  id="catName"
+                  placeholder="Category name"
+                  value="Test Category"
+                  class="bg-dark-700 border border-dark-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <button
+                  onclick="addCategory()"
+                  class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300"
+                >
+                  Add Category
+                </button>
+              </div>
+              <pre
+                id="adminResCategories"
+                class="bg-dark-900 border border-dark-700 rounded-lg p-4 text-sm text-gray-300 max-h-40 overflow-y-auto"
+              ></pre>
+            </div>
+
+       <!-- STEP 4: Products -->
+<div class="border-l-4 border-emerald-500 pl-4 mb-6">
+  <h3 class="text-lg font-bold text-emerald-400 mb-2">
+    4. Products
+  </h3>
+
+  <div class="overflow-x-auto pb-2">
+    <div
+      class="flex flex-wrap md:flex-nowrap gap-2 mb-4 min-w-[680px] items-center"
+    >
+      <button
+        onclick="getAllProducts()"
+        class="bg-gradient-emerald text-dark-900 font-bold py-[10px] px-4 rounded-lg hover:opacity-90 transition-opacity duration-300 flex-shrink-0"
+      >
+        List Products
+      </button>
+
+      <input
+        id="prodName"
+        placeholder="Product name"
+        value="Sample Product"
+        class="bg-dark-700 border border-dark-600 rounded-lg px-4 py-[10px] text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 flex-1 min-w-[150px]"
+      />
+      <input
+        id="prodPrice"
+        placeholder="Price"
+        value="10000"
+        class="bg-dark-700 border border-dark-600 rounded-lg px-4 py-[10px] text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-28"
+      />
+      <input
+        id="prodStock"
+        placeholder="Stock"
+        value="5"
+        class="bg-dark-700 border border-dark-600 rounded-lg px-4 py-[10px] text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-24"
+      />
+      <input
+        id="prodCat"
+        placeholder="Category ID"
+        value="1"
+        class="bg-dark-700 border border-dark-600 rounded-lg px-4 py-[10px] text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-32"
+      />
+
+      <button
+        onclick="addProduct()"
+        class="bg-gradient-emerald text-dark-900 font-bold py-[10px] px-4 rounded-lg hover:opacity-90 transition-opacity duration-300 flex-shrink-0"
+      >
+        Add Product
+      </button>
+    </div>
+  </div>
+
+  <pre
+    id="adminResProducts"
+    class="bg-dark-900 border border-dark-700 rounded-lg p-4 text-sm text-gray-300 max-h-40 overflow-y-auto"
+  ></pre>
+</div>
+
+
+            <!-- STEP 5: Carts -->
+            <div class="border-l-4 border-emerald-500 pl-4 mb-6">
+              <h3 class="text-lg font-bold text-emerald-400 mb-2">5. Carts</h3>
+              <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                <button
+                  onclick="getAllCarts()"
+                  class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300"
+                >
+                  View All Carts
+                </button>
+                <input
+                  id="cartProd"
+                  placeholder="Product ID"
+                  value="1"
+                  class="bg-dark-700 border border-dark-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <input
+                  id="cartQty"
+                  placeholder="Quantity"
+                  value="1"
+                  class="bg-dark-700 border border-dark-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <button
+                  onclick="addCartAdmin()"
+                  class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300"
+                >
+                  Add to Cart (admin)
+                </button>
+              </div>
+              <pre
+                id="adminResCarts"
+                class="bg-dark-900 border border-dark-700 rounded-lg p-4 text-sm text-gray-300 max-h-40 overflow-y-auto"
+              ></pre>
+            </div>
+
+            <!-- STEP 6: Orders -->
+            <div class="border-l-4 border-emerald-500 pl-4">
+              <h3 class="text-lg font-bold text-emerald-400 mb-2">6. Orders</h3>
+              <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                <button
+                  onclick="getAllOrders()"
+                  class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300"
+                >
+                  List All Orders
+                </button>
+                <button
+                  onclick="checkoutAdmin()"
+                  class="bg-gradient-emerald text-dark-900 font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300"
+                >
+                  Checkout (test)
+                </button>
+              </div>
+              <pre
+                id="adminResOrders"
+                class="bg-dark-900 border border-dark-700 rounded-lg p-4 text-sm text-gray-300 max-h-40 overflow-y-auto"
+              ></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tech Stack & Capabilities Section -->
+      <section class="py-12 px-4 md:px-8 bg-dark-900">
+        <div class="max-w-6xl mx-auto">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Tech Stack -->
+            <div
+              id="tech"
+              class="bg-dark-800 rounded-2xl p-6 shadow-card border border-dark-700"
+            >
+              <h2 class="text-xl font-bold text-white mb-4">
+                Tech Stack & Vendors
+              </h2>
+              <p class="text-gray-400 mb-6">
+                All technologies used are production-grade and battle-tested.
+              </p>
+
+              <div
+                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6"
+              >
+                <div
+                  class="bg-dark-700/50 border border-dark-600 rounded-xl p-4 flex items-center justify-center"
+                >
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg"
+                    alt="NestJS"
+                    class="h-8"
+                  />
+                </div>
+                <div
+                  class="bg-dark-700/50 border border-dark-600 rounded-xl p-4 flex items-center justify-center"
+                >
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"
+                    alt="TypeScript"
+                    class="h-8"
+                  />
+                </div>
+                <div
+                  class="bg-dark-700/50 border border-dark-600 rounded-xl p-4 flex items-center justify-center"
+                >
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
+                    alt="Node.js"
+                    class="h-8"
+                  />
+                </div>
+                <div
+                  class="bg-dark-700/50 border border-dark-600 rounded-xl p-4 flex items-center justify-center"
+                >
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg"
+                    alt="PostgreSQL"
+                    class="h-8"
+                  />
+                </div>
+                <div
+                  class="bg-dark-700/50 border border-dark-600 rounded-xl p-4 flex items-center justify-center"
+                >
+                  <svg
+                    width="26px"
+                    height="26px"
+                    viewBox="0 0 58 58"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    role="img"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M0 10C0 4.47715 4.47705 0 9.99976 0H47.9989C53.5216 0 57.9986 4.47715 57.9986 10V42.3189C57.9986 48.0326 50.7684 50.5124 47.2618 46.0014L36.2991 31.8988V49C36.2991 53.9706 32.2698 58 27.2993 58H9.99976C4.47705 58 0 53.5228 0 48V10ZM9.99976 8C8.89522 8 7.99981 8.89543 7.99981 10V48C7.99981 49.1046 8.89522 50 9.99976 50H27.5993C28.1516 50 28.2993 49.5523 28.2993 49V26.0673C28.2993 20.3536 35.5295 17.8738 39.0361 22.3848L49.9988 36.4874V10C49.9988 8.89543 50.1034 8 48.9988 8H9.99976Z"
+                      fill="#12FFF7"
+                    ></path>
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M0 10C0 4.47715 4.47705 0 9.99976 0H47.9989C53.5216 0 57.9986 4.47715 57.9986 10V42.3189C57.9986 48.0326 50.7684 50.5124 47.2618 46.0014L36.2991 31.8988V49C36.2991 53.9706 32.2698 58 27.2993 58H9.99976C4.47705 58 0 53.5228 0 48V10ZM9.99976 8C8.89522 8 7.99981 8.89543 7.99981 10V48C7.99981 49.1046 8.89522 50 9.99976 50H27.5993C28.1516 50 28.2993 49.5523 28.2993 49V26.0673C28.2993 20.3536 35.5295 17.8738 39.0361 22.3848L49.9988 36.4874V10C49.9988 8.89543 50.1034 8 48.9988 8H9.99976Z"
+                      fill="url(#paint0_linear_10558_11777)"
+                    ></path>
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M0 10C0 4.47715 4.47705 0 9.99976 0H47.9989C53.5216 0 57.9986 4.47715 57.9986 10V42.3189C57.9986 48.0326 50.7684 50.5124 47.2618 46.0014L36.2991 31.8988V49C36.2991 53.9706 32.2698 58 27.2993 58H9.99976C4.47705 58 0 53.5228 0 48V10ZM9.99976 8C8.89522 8 7.99981 8.89543 7.99981 10V48C7.99981 49.1046 8.89522 50 9.99976 50H27.5993C28.1516 50 28.2993 49.5523 28.2993 49V26.0673C28.2993 20.3536 35.5295 17.8738 39.0361 22.3848L49.9988 36.4874V10C49.9988 8.89543 50.1034 8 48.9988 8H9.99976Z"
+                      fill="url(#paint1_linear_10558_11777)"
+                    ></path>
+                    <path
+                      d="M48.0003 0C53.523 0 58 4.47715 58 10V42.3189C58 48.0326 50.7699 50.5124 47.2633 46.0014L36.3006 31.8988V49C36.3006 53.9706 32.2712 58 27.3008 58C27.8531 58 28.3008 57.5523 28.3008 57V26.0673C28.3008 20.3536 35.5309 17.8738 39.0375 22.3848L50.0002 36.4874V2C50.0002 0.89543 49.1048 0 48.0003 0Z"
+                      fill="#B9FFB3"
+                    ></path>
+                    <defs>
+                      <linearGradient
+                        id="paint0_linear_10558_11777"
+                        x1="57.9986"
+                        y1="58"
+                        x2="6.99848"
+                        y2="0.00123034"
+                        gradientUnits="userSpaceOnUse"
+                      >
+                        <stop stop-color="#B9FFB3"></stop>
+                        <stop
+                          offset="1"
+                          stop-color="#B9FFB3"
+                          stop-opacity="0"
+                        ></stop>
+                      </linearGradient>
+                      <linearGradient
+                        id="paint1_linear_10558_11777"
+                        x1="57.9986"
+                        y1="58"
+                        x2="23.5492"
+                        y2="44.6006"
+                        gradientUnits="userSpaceOnUse"
+                      >
+                        <stop stop-color="#1A1A1A" stop-opacity="0.9"></stop>
+                        <stop
+                          offset="1"
+                          stop-color="#1A1A1A"
+                          stop-opacity="0"
+                        ></stop>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+                <div
+                  class="bg-dark-700/50 border border-dark-600 rounded-xl p-4 flex items-center justify-center"
+                >
+                  <img
+                    src="https://raw.githubusercontent.com/typeorm/typeorm/master/resources/logo_big.png"
+                    alt="TypeORM"
+                    class="h-8"
+                  />
+                </div>
+                <div
+                  class="bg-dark-700/50 border border-dark-600 rounded-xl p-4 flex items-center justify-center"
+                >
+                  <img
+                    src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/stripe.svg"
+                    alt="Stripe"
+                    class="h-8"
+                  />
+                </div>
+                <div
+                  class="bg-dark-700/50 border border-dark-600 rounded-xl p-4 flex items-center justify-center"
+                >
+                  <img
+                    src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/cloudinary.svg"
+                    alt="Cloudinary"
+                    class="h-8"
+                  />
+                </div>
+                <div
+                  class="bg-dark-700/50 border border-dark-600 rounded-xl p-4 flex items-center justify-center"
+                >
+                  <img
+                    src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/render.svg"
+                    alt="Render"
+                    class="h-8"
+                  />
+                </div>
+                <div
+                  class="bg-dark-700/50 border border-dark-600 rounded-xl p-4 flex items-center justify-center"
+                >
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+                    alt="GitHub"
+                    class="h-8"
+                  />
+                </div>
+                <div
+                  class="bg-dark-700/50 border border-dark-600 rounded-xl p-4 flex items-center justify-center"
+                >
+                  <img
+                    src="https://www.vaadata.com/blog/wp-content/uploads/2016/12/jwt-json-web-token.png"
+                    alt="JWT"
+                    class="h-8"
+                  />
+                </div>
+                <div
+                  class="bg-dark-700/50 border border-dark-600 rounded-xl p-4 flex items-center justify-center"
+                >
+                  <img
+                    src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/openapiinitiative.svg"
+                    alt="OpenAPI"
+                    class="h-8"
+                  />
+                </div>
+              </div>
+
+              <div class="border-t border-dark-700 pt-4">
+                <div class="flex flex-wrap gap-2">
+                  <span
+                    class="bg-emerald-900/30 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full"
+                    >Node 20 LTS</span
+                  >
+                  <span
+                    class="bg-emerald-900/30 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full"
+                    >NestJS 10+</span
+                  >
+                  <span
+                    class="bg-emerald-900/30 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full"
+                    >TypeORM</span
+                  >
+                  <span
+                    class="bg-emerald-900/30 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full"
+                    >JWT Auth</span
+                  >
+                  <span
+                    class="bg-emerald-900/30 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full"
+                    >RBAC</span
+                  >
+                  <span
+                    class="bg-emerald-900/30 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full"
+                    >Stripe Webhooks</span
+                  >
+                  <span
+                    class="bg-emerald-900/30 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full"
+                    >Cloudinary Uploads</span
+                  >
+                  <span
+                    class="bg-emerald-900/30 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full"
+                    >Render Deploy</span
+                  >
+                  <span
+                    class="bg-emerald-900/30 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full"
+                    >Neon Postgres</span
+                  >
+                  <span
+                    class="bg-emerald-900/30 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full"
+                    >OpenAPI/Swagger</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Capabilities -->
+            <div
+              id="modules"
+              class="bg-dark-800 rounded-2xl p-6 shadow-card border border-dark-700"
+            >
+              <h2 class="text-xl font-bold text-white mb-4">Capabilities</h2>
+              <ul class="space-y-3 text-gray-300 mb-6">
+                <li class="flex items-start">
+                  <span
+                    class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                  ></span>
+                  <span
+                    ><span class="font-bold">Authentication</span>
+                    (Register/Login) &
+                    <span class="font-bold">JWT Authorization</span></span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span
+                    class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                  ></span>
+                  <span
+                    ><span class="font-bold">Role-based Access Control</span>
+                    (Admin/Customer)</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span
+                    class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                  ></span>
+                  <span
+                    ><span class="font-bold">Products & Categories</span> CRUD
+                    with validation</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span
+                    class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                  ></span>
+                  <span
+                    ><span class="font-bold">Cart</span> with quantity, totals,
+                    and stock checks</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span
+                    class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                  ></span>
+                  <span
+                    ><span class="font-bold">Orders</span> &
+                    <span class="font-bold">Order Items</span>
+                    (transactional)</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span
+                    class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                  ></span>
+                  <span
+                    ><span class="font-bold">Stripe Integration</span> —
+                    PaymentIntent +
+                    <code
+                      class="bg-dark-700 text-emerald-400 px-1 rounded text-xs"
+                      >/payment/webhook</code
+                    >
+                    handler</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span
+                    class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                  ></span>
+                  <span
+                    ><span class="font-bold">Cloudinary</span> — media uploads
+                    via upload_stream</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span
+                    class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                  ></span>
+                  <span
+                    ><span class="font-bold">Swagger</span> — auto API
+                    docs</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span
+                    class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                  ></span>
+                  <span>Unit Testing For All Modules With Jest</span>
+                </li>
+                <li class="flex items-start">
+                  <span
+                    class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                  ></span>
+                  <span>E2e Testing Example</span>
+                </li>
+              </ul>
+
+              <div class="border-t border-dark-700 pt-4">
+                <div class="flex items-center space-x-6">
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 bg-emerald-500 rounded-full mr-2"
+                    ></span>
+                    <span class="text-sm">Backend</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 bg-emerald-500 rounded-full mr-2"
+                    ></span>
+                    <span class="text-sm">Database</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span
+                      class="inline-block w-3 h-3 bg-emerald-500 rounded-full mr-2"
+                    ></span>
+                    <span class="text-sm">Stripe Webhook</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ERD Section -->
+      <section id="erd" class="py-12 px-4 md:px-8 bg-dark-950">
+        <div class="max-w-6xl mx-auto">
+          <div
+            class="bg-dark-800 rounded-2xl p-6 shadow-card border border-dark-700"
+          >
+            <h2 class="text-xl font-bold text-white mb-2">
+              Entity Relationship Diagram (ERD)
+            </h2>
+            <p class="text-gray-400 mb-6">
+              Database schema visualization generated from PostgreSQL (Neon).
+            </p>
+
+            <div class="bg-dark-900 rounded-xl p-4 border border-dark-700">
+              <img
+                src="/erd.svg"
+                alt="FlowCommerce ERD"
+                class="w-full rounded-lg"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Folder Structure Section -->
+      <section id="folder" class="py-12 px-4 md:px-8 bg-dark-900">
+        <div class="max-w-6xl mx-auto">
+          <div
+            class="bg-dark-800 rounded-2xl p-6 shadow-card border border-dark-700"
+          >
+            <h2 class="text-xl font-bold text-white mb-4">Folder Structure</h2>
+
+            <pre
+              class="bg-dark-900 border border-dark-700 rounded-xl p-4 text-sm text-gray-300 overflow-x-auto"
+            ><code>flowcommerce/
+├─ dist/
+├─ node_modules/
+├─ public/
+├─ ├─ index.html
+├─ └─ erd.svg
+├─ src/
+│  ├─ app.module.ts
+│  ├─ main.ts
+│  ├─ swagger.ts
+│  ├─ auth/
+│  │  ├─ auth.controller.ts
+│  │  ├─ auth.service.ts
+│  │  └─ jwt.strategy.ts
+│  ├─ users/
+│  │  ├─ users.controller.ts
+│  │  ├─ users.service.ts
+│  │  └─ users.entity.ts
+│  ├─ categories/
+│  │  ├─ categories.controller.ts
+│  │  ├─ categories.service.ts
+│  │  └─ categories.entity.ts
+│  ├─ products/
+│  │  ├─ products.controller.ts
+│  │  ├─ products.service.ts
+│  │  └─ products.entity.ts
+│  ├─ carts/
+│  │  ├─ carts.controller.ts
+│  │  ├─ carts.service.ts
+│  │  └─ carts.entity.ts
+│  ├─ orders/
+│  │  ├─ orders.controller.ts
+│  │  ├─ orders.service.ts
+│  │  ├─ orders.entity.ts
+│  │  └─ order-items.entity.ts
+│  ├─ payment/
+│  │  ├─ payment.controller.ts
+│  │  └─ payment.service.ts
+│  └─ uploads/
+│     ├─ uploads.service.ts
+│     └─ upload.controller.ts
+├─ test/
+│  └─ ...
+├─ .env
+├─ package.json
+├─ render.yaml
+└─ tsconfig.json
+</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ENV Section -->
+      <section id="env" class="py-12 px-4 md:px-8 bg-dark-950">
+        <div class="max-w-6xl mx-auto">
+          <div
+            class="bg-dark-800 rounded-2xl p-6 shadow-card border border-dark-700"
+          >
+            <h2 class="text-xl font-bold text-white mb-4">
+              Environment Variables Example
+            </h2>
+
+            <pre
+              class="bg-dark-900 border border-dark-700 rounded-xl p-4 text-sm text-gray-300 overflow-x-auto"
+            ><code>DATABASE_URL=postgres://user:pass@neon.host/db
+JWT_SECRET=supersecretkey
+
+STRIPE_SECRET_KEY=sk_test_***
+STRIPE_PUBLISHABLE_KEY=pk_test_***
+STRIPE_WEBHOOK_SECRET=whsec_***
+
+CLOUDINARY_CLOUD_NAME=your_cloud
+CLOUDINARY_API_KEY=your_key
+CLOUDINARY_API_SECRET=your_secret
+</code></pre>
+
+            <p class="text-gray-400 mt-4 text-sm">
+              Tip: On Render, set these in Dashboard → Environment. On local,
+              create a
+              <code
+                class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-xs"
+                >.env</code
+              >
+              file.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Endpoints Section -->
+      <section id="endpoints" class="py-12 px-4 md:px-8 bg-dark-900">
+        <div class="max-w-6xl mx-auto">
+          <div
+            class="bg-dark-800 rounded-2xl p-6 shadow-card border border-dark-700"
+          >
+            <h2 class="text-xl font-bold text-white mb-4">
+              Useful Links & Endpoints
+            </h2>
+
+            <ul class="space-y-3 text-gray-300">
+              <li class="flex items-start">
+                <span
+                  class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                ></span>
+                <span
+                  >Stripe Webhook:
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >/payment/webhook</code
+                  ></span
+                >
+              </li>
+              <li class="flex items-start">
+                <span
+                  class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                ></span>
+                <span
+                  >Auth:
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >POST /auth/register</code
+                  >,
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >POST /auth/login</code
+                  ></span
+                >
+              </li>
+              <li class="flex items-start">
+                <span
+                  class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                ></span>
+                <span
+                  >Users:
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >GET /users</code
+                  >,
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >GET /users/:id_user</code
+                  ></span
+                >
+              </li>
+              <li class="flex items-start">
+                <span
+                  class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                ></span>
+                <span
+                  >Categories:
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >GET /categories</code
+                  >,
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >POST /categories</code
+                  ></span
+                >
+              </li>
+              <li class="flex items-start">
+                <span
+                  class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                ></span>
+                <span
+                  >Products:
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >GET /products</code
+                  >,
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >POST /products</code
+                  ></span
+                >
+              </li>
+              <li class="flex items-start">
+                <span
+                  class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                ></span>
+                <span
+                  >Cart:
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >GET /carts/me</code
+                  >,
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >POST /carts</code
+                  >,
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >DELETE /carts/me/clear</code
+                  ></span
+                >
+              </li>
+              <li class="flex items-start">
+                <span
+                  class="inline-block w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"
+                ></span>
+                <span
+                  >Orders:
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >GET /orders/me</code
+                  >,
+                  <code
+                    class="bg-dark-700 text-emerald-400 px-2 py-1 rounded-md text-sm"
+                    >POST /orders/checkout</code
+                  ></span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="py-8 px-4 md:px-8 bg-dark-950 border-t border-dark-800">
+        <div class="max-w-6xl mx-auto text-center">
+          <p class="text-gray-400 text-sm">
+            © 2025 — Built by
+            <span class="font-bold text-emerald-400"
+              >Alif Haikal From Flowdev Teams</span
+            >. A self-initiated project for continuous learning and development.
+          </p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Stripe JS -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+      // Mobile menu toggle
+      document
+        .getElementById('mobile-menu-button')
+        .addEventListener('click', function () {
+          const menu = document.getElementById('mobile-menu');
+          menu.classList.toggle('hidden');
+        });
+
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', function (event) {
+        const menu = document.getElementById('mobile-menu');
+        const button = document.getElementById('mobile-menu-button');
+
+        if (!menu.contains(event.target) && !button.contains(event.target)) {
+          menu.classList.add('hidden');
+        }
+      });
+
+      // API Tester Logic 
+      const base = window.location.origin;
+      let token = '';
+      let adminToken = '';
+      let clientSecret = null;
+      let checkoutStatus = 'idle';
+      let stripe, card;
+
+      // === UTILITY ===
+      function show(id, data) {
+        document.getElementById(id).textContent = JSON.stringify(data, null, 2);
+      }
+
+      // === CUSTOMER ===
+      async function registerUser() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const res = await fetch(base + '/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+        show('resAuth', await res.json());
+      }
+
+      // === CUSTOMER LOGIN ===
+      async function loginUser() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const res = await fetch(base + '/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await res.json();
+        token = data.access_token || '';
+        show('resAuth', data);
+      }
+
+      // ===CUSTOMER GET PRODUCTS ===
+      async function getProducts() {
+        const res = await fetch(base + '/products', {
+          headers: token ? { Authorization: 'Bearer ' + token } : {},
+        });
+        const data = await res.json();
+        show('resProducts', data);
+        if (Array.isArray(data) && data.length > 0) {
+          document.getElementById('prodId').value =
+            data[0].id_product || data[0].id || 1;
+        }
+      }
+
+      // === CUSTOMER ADD TO CART ===
+      async function addCart() {
+        const id = Number(document.getElementById('prodId').value);
+        const qty = Number(document.getElementById('qty').value || 1);
+        const res = await fetch(base + '/carts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token,
+          },
+          body: JSON.stringify({ productId: id, quantity: qty }),
+        });
+        show('resCart', await res.json());
+      }
+
+      // === CUSTOMER CHECKOUT ===
+      async function checkout() {
+        const res = await fetch(base + '/orders/checkout', {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + token },
+        });
+        const data = await res.json();
+        show('resCheckout', data);
+        if (data.clientSecret) {
+          clientSecret = data.clientSecret;
+          initStripe();
+          checkoutStatus = 'pending';
+        }
+      }
+
+      // ===CUSTOMER STRIPE PAYMENT ===
+      function initStripe() {
+        stripe = Stripe(
+          'pk_test_51SMkGwGRGClTIbUYdaUqWkLOvLMH09iJhUXKFEpXB15w4o13WH4JE1D5rfMYeR85awFMZft8lhGOGS2X2To1wNHb00E4y2xAH7',
+        );
+        const elements = stripe.elements();
+        card = elements.create('card', {
+          style: {
+            base: { color: '#ffffff', '::placeholder': { color: '#cccccc' } },
+            invalid: { color: '#ff6b6b' },
+          },
+        });
+        card.mount('#card-element');
+
+        const form = document.getElementById('payment-form');
+        const msg = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (!clientSecret) {
+            msg.textContent = '⚠️ Please complete the checkout process first.';
+            return;
+          }
+
+          msg.textContent = '⏳ Processing your payment...';
+          const { error, paymentIntent } = await stripe.confirmCardPayment(
+            clientSecret,
+            { payment_method: { card } },
+          );
+
+          if (error) msg.textContent = '❌ Payment failed: ' + error.message;
+          else if (paymentIntent.status === 'succeeded') {
+            msg.textContent = '✅ Payment successful!';
+            checkoutStatus = 'paid';
+          } else
+            msg.textContent =
+              '⚠️ Unknown payment status: ' + paymentIntent.status;
+        });
+      }
+
+      // =========== ADMIN API TESTER ===========
+
+      function unauthorizedResponse() {
+        return { message: 'Unauthorized', statusCode: 401 };
+      }
+
+      function requireAdminAuth(targetId) {
+        if (!adminToken) {
+          show(targetId, unauthorizedResponse());
+          return false;
+        }
+        return true;
+      }
+
+      // === ADMIN LOGIN ===
+      async function loginAdmin() {
+        const username = document.getElementById('adminUser').value;
+        const password = document.getElementById('adminPass').value;
+        const res = await fetch(base + '/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await res.json();
+        adminToken = data.access_token || '';
+        show('adminResAuth', data);
+      }
+
+      // === ADMIN GET ALL USERS ===
+      async function getAllUsers() {
+        if (!requireAdminAuth('adminResUsers')) return;
+        const res = await fetch(base + '/users', {
+          headers: { Authorization: 'Bearer ' + adminToken },
+        });
+        show('adminResUsers', await res.json());
+      }
+
+      // === ADMIN GET ALL CATEGORIES ===
+      async function getAllCategories() {
+        if (!requireAdminAuth('adminResCategories')) return;
+        const res = await fetch(base + '/categories', {
+          headers: { Authorization: 'Bearer ' + adminToken },
+        });
+        show('adminResCategories', await res.json());
+      }
+
+      // === ADMIN ADD CATEGORY ===
+      async function addCategory() {
+        if (!requireAdminAuth('adminResCategories')) return;
+        const name = document.getElementById('catName').value;
+        const res = await fetch(base + '/categories', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + adminToken,
+          },
+          body: JSON.stringify({ name }),
+        });
+        show('adminResCategories', await res.json());
+      }
+
+      // === ADMIN GET ALL PRODUCTS ===
+      async function getAllProducts() {
+        if (!requireAdminAuth('adminResProducts')) return;
+        const res = await fetch(base + '/products', {
+          headers: { Authorization: 'Bearer ' + adminToken },
+        });
+        show('adminResProducts', await res.json());
+      }
+
+      // === ADMIN ADD PRODUCT ===
+      async function addProduct() {
+        if (!requireAdminAuth('adminResProducts')) return;
+        const name = document.getElementById('prodName').value;
+        const price = Number(document.getElementById('prodPrice').value);
+        const stock = Number(document.getElementById('prodStock').value);
+        const categoryId = Number(document.getElementById('prodCat').value);
+        const res = await fetch(base + '/products', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + adminToken,
+          },
+          body: JSON.stringify({ name, price, stock, categoryId }),
+        });
+        show('adminResProducts', await res.json());
+      }
+
+      // === ADMIN GET ALL CARTS ===
+      async function getAllCarts() {
+        if (!requireAdminAuth('adminResCarts')) return;
+        const res = await fetch(base + '/carts', {
+          headers: { Authorization: 'Bearer ' + adminToken },
+        });
+        show('adminResCarts', await res.json());
+      }
+
+      // === ADMIN ADD TO CART ===
+      async function addCartAdmin() {
+        if (!requireAdminAuth('adminResCarts')) return;
+        const productId = Number(document.getElementById('cartProd').value);
+        const quantity = Number(document.getElementById('cartQty').value);
+        const res = await fetch(base + '/carts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + adminToken,
+          },
+          body: JSON.stringify({ productId, quantity }),
+        });
+        show('adminResCarts', await res.json());
+      }
+
+      // === ADMIN GET ALL ORDERS ===
+      async function getAllOrders() {
+        if (!requireAdminAuth('adminResOrders')) return;
+        const res = await fetch(base + '/orders', {
+          headers: { Authorization: 'Bearer ' + adminToken },
+        });
+        show('adminResOrders', await res.json());
+      }
+
+      // === ADMIN CHECKOUT (TEST) ===
+      async function checkoutAdmin() {
+        if (!requireAdminAuth('adminResOrders')) return;
+        const res = await fetch(base + '/orders/checkout', {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + adminToken },
+        });
+        show('adminResOrders', await res.json());
+      }
+    </script>
+  </body>
+</html>

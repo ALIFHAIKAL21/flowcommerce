@@ -28,6 +28,12 @@ describe('CartsService', () => {
             create: jest.fn(),
             save: jest.fn(),
             delete: jest.fn(),
+            createQueryBuilder: jest.fn().mockReturnValue({
+              delete: jest.fn().mockReturnThis(),
+              from: jest.fn().mockReturnThis(),
+              where: jest.fn().mockReturnThis(),
+              execute: jest.fn().mockResolvedValue({}),
+            }),
           },
         },
         {
@@ -53,7 +59,7 @@ describe('CartsService', () => {
 
   afterAll(() => { jest.clearAllMocks(); });
 
-  
+
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
@@ -70,7 +76,7 @@ describe('CartsService', () => {
     });
   });
 
-  // 🔹 findOne
+  //  findOne
   describe('findOne', () => {
     it('should return one cart', async () => {
       const mockCart = { id_cart: 1 } as Carts;
@@ -81,23 +87,24 @@ describe('CartsService', () => {
     });
   });
 
-  // 🔹 create
+  // create
   describe('create', () => {
     const dto: CreateCartDto = {
-      userId: 1,
+
       productId: 2,
       quantity: 2,
     };
 
     it('should throw if user not found', async () => {
       jest.spyOn(usersRepo, 'findOneBy').mockResolvedValue(null);
-      await expect(service.create(dto)).rejects.toThrow(NotFoundException);
+      await expect(service.create(1, dto)).rejects.toThrow(NotFoundException);
+
     });
 
     it('should throw if product not found', async () => {
       jest.spyOn(usersRepo, 'findOneBy').mockResolvedValue({ id_user: 1 } as Users);
       jest.spyOn(productsRepo, 'findOneBy').mockResolvedValue(null);
-      await expect(service.create(dto)).rejects.toThrow(NotFoundException);
+      await expect(service.create(1, dto)).rejects.toThrow(NotFoundException);
     });
 
     it('should throw if stock not enough', async () => {
@@ -106,7 +113,7 @@ describe('CartsService', () => {
         .spyOn(productsRepo, 'findOneBy')
         .mockResolvedValue({ id_product: 2, name: 'Laptop', stock: 1 } as Products);
 
-      await expect(service.create(dto)).rejects.toThrow(BadRequestException);
+      await expect(service.create(1, dto)).rejects.toThrow(BadRequestException);
     });
 
     it('should update existing cart quantity if already in cart', async () => {
@@ -128,7 +135,7 @@ describe('CartsService', () => {
         total_price: 300,
       });
 
-      const result = await service.create(dto);
+      const result = await service.create(1, dto);
       expect(result.total_price).toBe(300);
       expect(cartsRepo.save).toHaveBeenCalled();
     });
@@ -142,12 +149,12 @@ describe('CartsService', () => {
       jest.spyOn(cartsRepo, 'create').mockReturnValue({ id_cart: 1 } as Carts);
       jest.spyOn(cartsRepo, 'save').mockResolvedValue({ id_cart: 1 } as Carts);
 
-      const result = await service.create(dto);
+      const result = await service.create(1, dto);
       expect(result).toEqual({ id_cart: 1 });
     });
   });
 
-  // 🔹 update
+  // update
   describe('update', () => {
     const dto: UpdateCartDto = { quantity: 5 };
 
@@ -177,7 +184,7 @@ describe('CartsService', () => {
     });
   });
 
-  // 🔹 remove
+  // remove
   describe('remove', () => {
     it('should remove cart successfully', async () => {
       jest.spyOn(cartsRepo, 'delete').mockResolvedValue({ affected: 1 } as any);
@@ -190,12 +197,28 @@ describe('CartsService', () => {
     });
   });
 
-  // 🔹 clearUserCart
+  // clearUserCart
   describe('clearUserCart', () => {
     it('should clear cart of a user', async () => {
-      jest.spyOn(cartsRepo, 'delete').mockResolvedValue({ affected: 2 } as any);
+      const deleteMock = jest.fn().mockReturnThis();
+      const fromMock = jest.fn().mockReturnThis();
+      const whereMock = jest.fn().mockReturnThis();
+      const executeMock = jest.fn().mockResolvedValue({});
+
+      (cartsRepo.createQueryBuilder as jest.Mock).mockReturnValue({
+        delete: deleteMock,
+        from: fromMock,
+        where: whereMock,
+        execute: executeMock,
+      });
+
       await service.clearUserCart(1);
-      expect(cartsRepo.delete).toHaveBeenCalledWith({ user: { id_user: 1 } });
+
+      expect(cartsRepo.createQueryBuilder).toHaveBeenCalled();
+      expect(deleteMock).toHaveBeenCalled();
+      expect(fromMock).toHaveBeenCalledWith('carts');
+      expect(whereMock).toHaveBeenCalledWith('"userIdUser" = :userId', { userId: 1 });
+      expect(executeMock).toHaveBeenCalled();
     });
   });
 });

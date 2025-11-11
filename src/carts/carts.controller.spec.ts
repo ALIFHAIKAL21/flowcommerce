@@ -19,7 +19,7 @@ describe('CartsController', () => {
   };
 
   const mockRequest = {
-    user: { userId: 1, role: 'user' },
+    user: { id_user: 1, role: 'user' },
   } as any;
 
   // setup testing module
@@ -93,13 +93,13 @@ describe('CartsController', () => {
   // create
   describe('create', () => {
     it('should create a new cart for logged-in user', async () => {
-      const dto: CreateCartDto = { userId:1, productId: 2, quantity: 3 };
-      const created = { id_cart: 1, ...dto, userId: 1 };
+      const dto: CreateCartDto = { productId: 2, quantity: 3 };
+      const created = { id_cart: 1, ...dto, id_user: 1 };
       jest.spyOn(service, 'create').mockResolvedValue(created as any);
 
       const result = await controller.create(mockRequest, dto);
       expect(result).toEqual(created);
-      expect(service.create).toHaveBeenCalledWith({ ...dto, userId: 1 });
+      expect(service.create).toHaveBeenCalledWith(1, dto); 
     });
   });
 
